@@ -216,7 +216,7 @@
         onFechar: () => View.resetarInputArquivo(),
         onConfirmar: mapa => {
           Store.setMapeamento(assinatura, mapa);
-          const resultado = Dominio.processarDados(planilha.raw, mapa);
+          const resultado = Dominio.processarDados(planilha.raw, mapa, View.getAtendente());
           acareacoes = resultado.dados;
           finalizarCarregamento(planilha.abaNome, planilha.raw.length, resultado.ignorados);
         },

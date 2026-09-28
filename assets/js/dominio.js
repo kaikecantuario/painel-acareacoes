@@ -139,12 +139,21 @@ window.App.Dominio = (function () {
     return (h === 0 && mi === 0) ? dataUTC(d) : `${dataUTC(d)} às ${pad(h)}h${pad(mi)}`;
   }
 
+  /** Nomes do time de plantão — expediente das 9h às 18h. */
+  const ATENDENTES_PLANTAO = ['sabrina', 'malu', 'diogo', 'miqueias', 'renan', 'edja', 'wilson', 'lucas', 'ricardo'];
+
+  /** O nome digitado em "Responsável pelos atendimentos" é de alguém do plantão? */
+  function ehPlantao(nomeAtendente) {
+    return ATENDENTES_PLANTAO.includes(strip(nomeAtendente).replace(/\s+/g, ' '));
+  }
+
   /**
-   * O prazo regional vence às 17h. Fora do expediente o BI grava horários
-   * que não correspondem ao prazo real, então normalizamos:
-   * depois das 17h vira 17h do mesmo dia; antes das 8h, 17h do dia anterior.
+   * O prazo regional vence às 17h (plantão: 18h). Fora do expediente o BI
+   * grava horários que não correspondem ao prazo real, então normalizamos:
+   * depois do fim do expediente vira o fim do expediente no mesmo dia;
+   * antes do início do expediente, o fim do expediente no dia anterior.
    */
-  function ajustarVencimento(v) {
+  function ajustarVencimento(v, plantao) {
     if (ehVazio(v)) return 'N/A';
     if (typeof v !== 'number') {
       const s = String(v).trim();
@@ -152,9 +161,11 @@ window.App.Dominio = (function () {
     }
     const d = dataDeSerialExcel(v);
     if (isNaN(d)) return String(v).trim() || 'N/A';
+    const inicio = plantao ? 9 : 8;
+    const fim = plantao ? 18 : 17;
     const h = d.getUTCHours();
-    if (h >= 17) return `${dataUTC(d)} às 17h00`;
-    if (h < 8) return `${dataUTC(new Date(d.getTime() - 86400000))} às 17h00`;
+    if (h >= fim) return `${dataUTC(d)} às ${fim}h00`;
+    if (h < inicio) return `${dataUTC(new Date(d.getTime() - 86400000))} às ${fim}h00`;
     return `${dataUTC(d)} às ${pad(h)}h${pad(d.getUTCMinutes())}`;
   }
 
@@ -184,8 +195,9 @@ window.App.Dominio = (function () {
    * campo → nome de coluna. Linhas cujo tipo de problema não é uma acareação
    * conhecida são descartadas e contadas em `ignorados`.
    */
-  function processarDados(raw, mapa) {
+  function processarDados(raw, mapa, atendente) {
     let ignorados = 0;
+    const plantao = ehPlantao(atendente);
     const texto = (linha, coluna, padrao) => coluna ? String(linha[coluna] || padrao).trim() : padrao;
 
     const dados = raw.map(linha => {
@@ -202,7 +214,7 @@ window.App.Dominio = (function () {
         telEntregador:  texto(linha, mapa.telEntregador, ''),
         entregador:     mapa.entregador ? String(linha[mapa.entregador] || 'N/A').trim() : 'N/A',
         dataBaixa:      mapa.dataBaixa ? formatarDataExcel(linha[mapa.dataBaixa]) : 'N/A',
-        vencimento:     prazoRaw != null ? ajustarVencimento(prazoRaw) : 'N/A',
+        vencimento:     prazoRaw != null ? ajustarVencimento(prazoRaw, plantao) : 'N/A',
         prazoTs:        prazoRaw != null ? prazoTimestamp(prazoRaw) : Infinity,
         valorNum:       valorNum,
         valorFmt:       formatarValor(valorNum),
@@ -293,6 +305,7 @@ window.App.Dominio = (function () {
     formatarValor,
     formatarDataExcel,
     ajustarVencimento,
+    ehPlantao,
     prazoTimestamp,
     isNumeroInvalido,
     processarDados,
