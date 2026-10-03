@@ -19,8 +19,10 @@ window.App.ModalMapa = (function () {
   }
 
   function escaparAtributo(s) {
-    return String(s).replace(/"/g, '&quot;');
+    return escaparHtml(s).replace(/"/g, '&quot;');
   }
+
+  function escaparHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
   /** Verde = detectado, vermelho = obrigatório sem coluna, neutro = opcional vazio. */
   function classeDoSelect(campo, valor) {
@@ -30,7 +32,7 @@ window.App.ModalMapa = (function () {
 
   function montarLinha(campo, cols, selecionada) {
     const opcoes = cols
-      .map(c => `<option value="${escaparAtributo(c)}" ${c === selecionada ? 'selected' : ''}>${c}</option>`)
+      .map(c => `<option value="${escaparAtributo(c)}" ${c === selecionada ? 'selected' : ''}>${escaparHtml(c)}</option>`)
       .join('');
 
     return `<div class="modal-row">
@@ -45,9 +47,9 @@ window.App.ModalMapa = (function () {
   function montarHtml(cols, campos, mapa) {
     const linhas = campos.map(campo => montarLinha(campo, cols, mapa[campo.id] || '')).join('');
 
-    return `<div class="modal-overlay"><div class="modal">
+    return `<div class="modal-overlay"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="map-title">
       <div class="modal-header">
-        <h2><i class="ti ti-table-options"></i> Confirme as colunas da planilha</h2>
+        <h2 id="map-title"><i class="ti ti-table-options"></i> Confirme as colunas da planilha</h2>
         <button class="modal-close" data-acao="fechar" title="Fechar">&#x2715;</button>
       </div>
       <p class="modal-sub">Verifique se cada campo foi associado à coluna correta.</p>
@@ -122,6 +124,7 @@ window.App.ModalMapa = (function () {
 
     container().innerHTML = montarHtml(cols, campos, opcoes.mapa || {});
     if (opcoes.foiSalvo) document.getElementById('modal-saved-notice').style.display = 'block';
+    container().querySelector('select').focus();
   }
 
   // Listeners registrados uma única vez, por delegação: o conteúdo do
@@ -144,6 +147,12 @@ window.App.ModalMapa = (function () {
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && aberto) fechar();
+    if (e.key === 'Tab' && aberto) {
+      const nodes = Array.from(container().querySelectorAll('button, select'));
+      const first = nodes[0], last = nodes[nodes.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
   });
 
   return { abrir, fechar };

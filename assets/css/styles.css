@@ -8,6 +8,7 @@
 
 /* ── Tokens ─────────────────────────────────────────────────────────── */
 :root {
+  color-scheme: light;
   --bg: #fafaf9;
   --bg-card: #ffffff;
   --bg-card2: #f5f5f4;
@@ -15,12 +16,13 @@
   --linha: #eeeeec;
   --text: #262625;
   --text-muted: #6e6e6b;
-  --text-hint: #a6a6a2;
+  --text-hint: #76706d;
   --input-bg: #f5f5f4;
   --info-text: #444;
   --acento: #2f6db0;
 }
 [data-theme="dark"] {
+  color-scheme: dark;
   --bg: #17171a;
   --bg-card: #1e1e21;
   --bg-card2: #26262a;
@@ -28,7 +30,7 @@
   --linha: #2c2c31;
   --text: #e8e8e6;
   --text-muted: #9d9d99;
-  --text-hint: #6a6a67;
+  --text-hint: #a39d9a;
   --input-bg: #26262a;
   --info-text: #bbb;
   --acento: #7fb0e6;
@@ -463,3 +465,68 @@ h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; color: var(--te
   display: none;
 }
 [data-theme="dark"] .modal-saved-notice { background: #0a2010; color: #5dcaa5; border-color: #0F6E56; }
+
+/* ── Modal de atribuição no JMS ─────────────────────────────────────── */
+.atr-espera { font-size: 13px; color: var(--text-muted); padding: 1rem 0; }
+.atr-resumo {
+  font-size: 12px;
+  color: var(--info-text);
+  background: var(--bg-card2);
+  border: 1px solid var(--linha);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+}
+.atr-lista { max-height: 40vh; overflow-y: auto; border: 1px solid var(--linha); border-radius: 8px; }
+.atr-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--linha);
+}
+.atr-item:last-child { border-bottom: none; }
+.atr-remessa { font-family: ui-monospace, Consolas, monospace; color: var(--text); }
+.atr-tag {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-hint);
+  border: 1px solid var(--linha);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+.atr-destino { color: var(--text-muted); margin-left: auto; text-align: right; }
+.atr-ok .atr-destino { color: #0F6E56; }
+[data-theme="dark"] .atr-ok .atr-destino { color: #5dcaa5; }
+.atr-pulado .atr-remessa { color: var(--text-hint); }
+.atr-log { margin-top: 10px; font-size: 11px; color: var(--text-muted); }
+.atr-log summary { cursor: pointer; }
+.atr-log pre, .atr-saida {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 11px;
+  font-family: ui-monospace, Consolas, monospace;
+  background: var(--bg-card2);
+  border: 1px solid var(--linha);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-top: 6px;
+  max-height: 40vh;
+  overflow-y: auto;
+  color: var(--info-text);
+}
+.atr-passos { font-size: 12px; color: var(--info-text); margin: 0 0 10px 1.1rem; }
+.atr-passos li { margin-bottom: 4px; }
+.atr-passos code { font-family: ui-monospace, Consolas, monospace; background: var(--bg-card2); padding: 1px 4px; border-radius: 4px; }
+.atr-token {
+  width: 100%;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--text);
+  resize: vertical;
+}

@@ -8,10 +8,14 @@
 (function () {
   'use strict';
 
-  const { Store, Dominio, Templates, Planilha, UI, ModalMapa, View } = window.App;
+  const { Store, Dominio, Templates, Planilha, UI, ModalMapa, View, Atribuir } = window.App;
 
   /** Acareações da planilha carregada. O índice na lista é o id usado pelos cards. */
   let acareacoes = [];
+
+  /** O .xlsx original — a atribuição no JMS precisa do arquivo, não das linhas
+   *  já processadas (ver o cabeçalho de atribuir.js). */
+  let arquivoCarregado = null;
 
   /** Índices marcados para as ações em massa, e se o modo de seleção está ligado. */
   const selecionados = new Set();
@@ -51,6 +55,7 @@
   function renderizar() {
     const itens = visiveis();
     atualizarStats();
+    View.renderStatusTabs(acareacoes);
     View.renderBulkBar(itens.length);
     View.renderContadorSelecionados(selecionados.size);
     View.renderCards(itens.map(paraItemDeCard), { modoSelecao: modoSelecaoObs });
@@ -86,8 +91,8 @@
   }
 
   function alternarConcluido(row, idx) {
-    View.marcarConcluido(idx, Store.alternarConcluido(row.remessa));
-    atualizarStats();
+    Store.alternarConcluido(row.remessa);
+    renderizar();
   }
 
   function definirPresencial(row, idx, marcado) {
@@ -142,8 +147,12 @@
   function baixarPlanilhaFiltrada() {
     const itens = visiveis();
     if (!itens.length) { UI.toast('Nenhum ticket para exportar.'); return; }
-    Planilha.exportarAcareacoes(itens.map(({ row }) => row));
-    UI.toast(`Planilha com ${itens.length} ticket(s) baixada!`);
+    try {
+      Planilha.exportarAcareacoes(itens.map(({ row }) => row));
+      UI.toast(`Planilha com ${itens.length} ticket(s) baixada!`);
+    } catch (err) {
+      UI.toast('Não foi possível baixar a planilha: ' + err.message);
+    }
   }
 
   function fecharObsEmMassa() {
@@ -195,8 +204,6 @@
       ignorados: ignorados,
     });
 
-    if (!acareacoes.length) { alert('Nenhuma acareação válida encontrada.'); return; }
-
     View.mostrarPainel();
     View.preencherFiltros(Dominio.opcoesDeFiltro(acareacoes));
     renderizar();
@@ -216,7 +223,18 @@
         onFechar: () => View.resetarInputArquivo(),
         onConfirmar: mapa => {
           Store.setMapeamento(assinatura, mapa);
+<<<<<<< HEAD
           const resultado = Dominio.processarDados(planilha.raw, mapa, View.getAtendente());
+=======
+          const resultado = Dominio.processarDados(planilha.raw, mapa);
+          if (!resultado.dados.length) { alert('Nenhuma acareação válida encontrada.'); return; }
+          arquivoCarregado = file;
+          Atribuir.guardarArquivo(file);
+          selecionados.clear();
+          modoSelecaoObs = false;
+          View.mostrarModoSelecao(false);
+          View.resetarFiltros();
+>>>>>>> f372530 (Integrate Claude Design with functional dashboard and standalone)
           acareacoes = resultado.dados;
           finalizarCarregamento(planilha.abaNome, planilha.raw.length, resultado.ignorados);
         },
@@ -230,9 +248,10 @@
 
   function trocarPlanilha() {
     acareacoes = [];
+    arquivoCarregado = null;
+    Atribuir.guardarArquivo(null);
     selecionados.clear();
     modoSelecaoObs = false;
-    Store.limparPresencial();
     View.resetarFiltros();
     View.mostrarUpload();
     View.resetarInputArquivo().click();
@@ -248,6 +267,7 @@
 
   View.ligar({
     aoAlternarTema: alternarTema,
+    aoMudarLayout: layout => { Store.setLayout(layout); View.aplicarLayout(layout); },
     aoSelecionarArquivo: carregarArquivo,
     aoMudarAtendente: nome => Store.setAtendente(nome),
     aoMudarPrefs: prefs => Store.setPrefs(prefs),
@@ -260,9 +280,15 @@
     aoSelecionarVisiveis: selecionarVisiveis,
     aoLimparSelecao: limparSelecao,
     aoAplicarObsEmMassa: aplicarObsEmMassa,
+    aoAtribuirTickets: () => Atribuir.abrir(arquivoCarregado),
   });
 
+  // O botão de atribuir só aparece se o servidor local estiver no ar
+  // (ou se a URL trouxer ?atribuir=1 — ver atribuir.js).
+  Atribuir.deveMostrar().then(disponivel => { if (disponivel) View.mostrarBotaoAtribuir(); });
+
   View.aplicarTema(Store.getTema());
+  View.aplicarLayout(Store.getLayout());
   View.setAtendente(Store.getAtendente());
   View.setPrefs(Store.getPrefs());
 })();

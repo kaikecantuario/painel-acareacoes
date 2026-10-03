@@ -31,7 +31,7 @@ window.App.View = (function () {
   const on = {};
 
   function escaparAtributo(s) {
-    return String(s).replace(/"/g, '&quot;');
+    return escaparHtml(s).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   function escaparHtml(s) {
@@ -49,6 +49,26 @@ window.App.View = (function () {
 
   function getTemaAtual() {
     return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  }
+
+  function aplicarLayout(layout) {
+    const valor = layout === 'original' ? 'original' : 'novo';
+    document.documentElement.dataset.layout = valor;
+    document.querySelectorAll('[data-layout-choice]').forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.layoutChoice === valor));
+    });
+    document.querySelectorAll('details.menu').forEach(menu => { menu.open = false; });
+  }
+
+  function renderStatusTabs(dados) {
+    const atual = $('filter-ticket-status').value;
+    const base = $('filter-base').value;
+    const lista = base ? dados.filter(row => row.base === base) : dados;
+    const tabs = [['', 'Todos'], ...Object.entries(STATUS_TICKET_META).map(([key, meta]) => [key, meta.label])];
+    $('status-tabs').innerHTML = tabs.map(([key, label]) => {
+      const qtd = key ? lista.filter(row => row.statusTicket === key).length : lista.length;
+      return `<button type="button" data-status="${key}" aria-pressed="${key === atual}">${label}<span class="tab-count">${qtd}</span></button>`;
+    }).join('');
   }
 
   // ─── Barra do atendente e preferências ──────────────────────────────
@@ -107,6 +127,7 @@ window.App.View = (function () {
     preencherSelect('filter-embarcador', opcoes.embarcadores);
     preencherSelect('filter-problema', opcoes.problemas);
     preencherSelect('filter-assistente', opcoes.assistentes);
+    if (!opcoes.statusTickets.includes('para_atribuir')) $('filter-ticket-status').value = '';
   }
 
   function resetarFiltros() {
@@ -123,12 +144,15 @@ window.App.View = (function () {
   // ─── Visibilidade das seções ────────────────────────────────────────
 
   function mostrarPainel() {
+    $('toolbar').style.display = 'block';
     $('upload-area').style.display = 'none';
     $('stats').style.display = 'flex';
     $('filter-bar').style.display = 'flex';
   }
 
   function mostrarUpload() {
+    $('toolbar').style.display = 'none';
+    mostrarModoSelecao(false);
     $('upload-area').style.display = 'block';
     $('stats').style.display = 'none';
     $('filter-bar').style.display = 'none';
@@ -143,7 +167,7 @@ window.App.View = (function () {
     const barra = $('info-bar');
     barra.style.display = 'flex';
     barra.innerHTML =
-      `<span>Aba: <b>${info.abaNome}</b> &bull; Linhas: <b>${info.linhas}</b> &bull; Acareações: <b>${info.acareacoes}</b> &bull; Ignorados: <b>${info.ignorados}</b></span>
+      `<span><i class="ti ti-file-spreadsheet" aria-hidden="true"></i> Aba: <b>${escaparHtml(info.abaNome)}</b> &bull; Linhas: <b>${info.linhas}</b> &bull; Acareações: <b>${info.acareacoes}</b> &bull; Ignorados: <b>${info.ignorados}</b></span>
        <button class="btn btn-sm" data-acao="trocar-planilha"><i class="ti ti-refresh"></i> Trocar planilha</button>`;
   }
 
@@ -155,9 +179,13 @@ window.App.View = (function () {
   }
 
   function renderBulkBar(qtd) {
-    $('bulk-bar').style.display = qtd > 0 ? 'flex' : 'none';
+    $('bulk-bar').style.display = 'flex';
     $('bulk-count').textContent =
+<<<<<<< HEAD
       `${qtd} ticket${qtd === 1 ? '' : 's'} ${qtd === 1 ? 'visível' : 'visíveis'} (respeitando os filtros atuais)`;
+=======
+      `${qtd} ticket${qtd === 1 ? '' : 's'} visível${qtd === 1 ? '' : 'eis'}`;
+>>>>>>> f372530 (Integrate Claude Design with functional dashboard and standalone)
   }
 
   // ─── Seleção e observação em massa ──────────────────────────────────
@@ -181,7 +209,7 @@ window.App.View = (function () {
   function badgeStatusTicket(row) {
     if (!row.statusTicketRaw) return '';
     const meta = STATUS_TICKET_META[row.statusTicket] || STATUS_TICKET_META.sem_status;
-    return `<span class="badge ${meta.cls}" title="Status no BI: ${row.statusTicketRaw}">${meta.label}</span>`;
+    return `<span class="badge ${meta.cls}" title="Status no BI: ${escaparAtributo(row.statusTicketRaw)}">${meta.label}</span>`;
   }
 
   /**
@@ -202,24 +230,24 @@ window.App.View = (function () {
           <div class="card-top-esq">
             ${caixaSelecao}
             <div>
-              <div class="card-title">${row.remessa} &mdash; ${row.embarcador}</div>
-              <div class="card-subtitle">${row.base}${row.rne ? ' &bull; ' + row.rne : ''}</div>
+              <div class="card-title"><span class="remessa">${escaparHtml(row.remessa)}</span><span>${escaparHtml(row.embarcador)}</span></div>
+              <div class="card-subtitle">${escaparHtml(row.base)}${row.rne ? ' &bull; ' + escaparHtml(row.rne) : ''}</div>
             </div>
           </div>
           <div class="badges">
             <span class="badge ${presencial ? 'badge-red' : 'badge-blue'}" id="badge-tipo-${idx}">${presencial ? 'Presencial' : 'WhatsApp'}</span>
-            <span class="badge badge-amber">${row.problema}</span>
+            <span class="badge badge-amber">${escaparHtml(row.problema)}</span>
             ${badgeStatusTicket(row)}
-            ${row.valorFmt ? `<span class="badge badge-gray">${row.valorFmt}</span>` : ''}
+            ${row.valorFmt ? `<span class="badge badge-gray">${escaparHtml(row.valorFmt)}</span>` : ''}
             <span class="badge badge-done" id="badge-done-${idx}" style="display:${concluido ? '' : 'none'}"><i class="ti ti-check"></i> Concluída</span>
           </div>
         </div>
         <div class="card-grid">
-          <div class="field"><div class="field-label">Vencimento</div><div class="field-value">${row.vencimento}</div></div>
-          <div class="field"><div class="field-label">Entregador</div><div class="field-value">${row.entregador}</div></div>
-          <div class="field"><div class="field-label">Telefone cliente</div><div class="field-value">${telInvalido ? 'Sem número' : row.tel}</div></div>
-          <div class="field"><div class="field-label">Telefone entregador</div><div class="field-value">${row.telEntregador || 'N/A'}</div></div>
-          ${row.item ? `<div class="field"><div class="field-label">Produto</div><div class="field-value">${row.item}</div></div>` : ''}
+          <div class="field ${Number.isFinite(row.prazoTs) && row.prazoTs <= Date.now() + 86400000 ? 'urgent' : ''}"><div class="field-label">Vencimento</div><div class="field-value">${escaparHtml(row.vencimento)}</div></div>
+          <div class="field"><div class="field-label">Entregador</div><div class="field-value">${escaparHtml(row.entregador)}</div></div>
+          <div class="field ${telInvalido ? 'missing-phone' : ''}"><div class="field-label">Telefone cliente</div><div class="field-value">${telInvalido ? 'Sem número' : escaparHtml(row.tel)}</div></div>
+          <div class="field"><div class="field-label">Telefone entregador</div><div class="field-value">${escaparHtml(row.telEntregador || 'N/A')}</div></div>
+          <div class="field field-product"><div class="field-label">Produto</div><div class="field-value">${escaparHtml(row.item || 'Não informado')}</div></div>
         </div>
         <div class="card-actions">
           <button class="btn btn-teal" data-acao="copiar-wpp" data-idx="${idx}"><i class="ti ti-message"></i> Copiar ativo</button>
@@ -332,6 +360,18 @@ window.App.View = (function () {
 
   function abrirSeletorArquivo() { $('file-input').click(); }
 
+  /**
+   * Revela a atribuição no JMS. Fica escondida por padrão: só existe pra quem
+   * está com o servidor local (servidor_atribuir.py) ligado — o resto do time
+   * não tem o login CE nem o servidor, então o botão só confundiria.
+   */
+  function mostrarBotaoAtribuir() {
+    ['btn-atribuir', 'atribuir-titulo', 'atribuir-separador'].forEach(id => {
+      const el = $(id);
+      if (el) el.style.display = '';
+    });
+  }
+
   // ─── Ligação com o controlador ──────────────────────────────────────
 
   /** Extrai { acao, idx, elemento } de um alvo de evento dentro dos cards. */
@@ -347,12 +387,24 @@ window.App.View = (function () {
 
   function ligarEventos() {
     $('theme-toggle').addEventListener('click', () => on.aoAlternarTema && on.aoAlternarTema());
+    document.querySelectorAll('[data-layout-choice]').forEach(button => {
+      button.addEventListener('click', () => on.aoMudarLayout && on.aoMudarLayout(button.dataset.layoutChoice));
+    });
+    $('status-tabs').addEventListener('click', e => {
+      const button = e.target.closest('button[data-status]');
+      if (!button) return;
+      $('filter-ticket-status').value = button.dataset.status;
+      if (on.aoMudarFiltros) on.aoMudarFiltros();
+    });
 
     $('upload-area').addEventListener('click', e => {
       if (e.target.id === 'file-input') return; // evita reentrar pelo clique programático
       abrirSeletorArquivo();
     });
     $('file-input').addEventListener('change', tratarSelecaoArquivo);
+    $('upload-area').addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrirSeletorArquivo(); }
+    });
 
     $('assistente-input').addEventListener('input', e => {
       if (on.aoMudarAtendente) on.aoMudarAtendente(e.target.value);
@@ -381,6 +433,7 @@ window.App.View = (function () {
     $('btn-selecionar-visiveis').addEventListener('click', () => on.aoSelecionarVisiveis && on.aoSelecionarVisiveis());
     $('btn-limpar-selecao').addEventListener('click', () => on.aoLimparSelecao && on.aoLimparSelecao());
     $('btn-aplicar-obs').addEventListener('click', () => on.aoAplicarObsEmMassa && on.aoAplicarObsEmMassa());
+    $('btn-atribuir').addEventListener('click', () => on.aoAtribuirTickets && on.aoAtribuirTickets());
 
     // Delegação nos cards: o container sobrevive aos re-renders, os cards não.
     const cards = $('cards-container');
@@ -406,6 +459,7 @@ window.App.View = (function () {
   return {
     ligar,
     aplicarTema, getTemaAtual,
+    aplicarLayout, renderStatusTabs,
     setAtendente, getAtendente,
     setPrefs, getPrefs,
     lerFiltros, preencherFiltros, resetarFiltros,
@@ -414,6 +468,6 @@ window.App.View = (function () {
     renderContadorSelecionados, mostrarModoSelecao, getTextoObsEmMassa, limparTextoObsEmMassa,
     marcarPresencial, marcarConcluido, marcarObs, alternarPainelObs,
     getValorLider, getValorObs, espelharLider,
-    resetarInputArquivo, abrirSeletorArquivo,
+    resetarInputArquivo, abrirSeletorArquivo, mostrarBotaoAtribuir,
   };
 })();

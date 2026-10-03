@@ -10,6 +10,7 @@ window.App.Store = (function () {
 
   const CHAVES = {
     tema:       'tema',
+    layout:     'painel-layout',
     prefs:      'prefs',
     atendente:  'atendente',
     lideres:    'lideres',
@@ -26,7 +27,10 @@ window.App.Store = (function () {
     try { localStorage.setItem(chave, valor); } catch (e) { /* storage cheio ou bloqueado */ }
   }
   function lerObjeto(chave) {
-    try { return JSON.parse(lerTexto(chave) || '{}'); } catch (e) { return {}; }
+    try {
+      const valor = JSON.parse(lerTexto(chave) || '{}');
+      return Object.assign(Object.create(null), valor && typeof valor === 'object' && !Array.isArray(valor) ? valor : {});
+    } catch (e) { return Object.create(null); }
   }
   function gravarObjeto(chave, valor) {
     gravarTexto(chave, JSON.stringify(valor));
@@ -40,13 +44,15 @@ window.App.Store = (function () {
   const obs        = lerObjeto(CHAVES.obs);
 
   function chaveMapa(assinatura) {
-    return PREFIXO_MAPA + btoa(assinatura).slice(0, 40);
+    return PREFIXO_MAPA + encodeURIComponent(assinatura);
   }
 
   return {
     // ── Tema ──────────────────────────────────────────────────────────
     getTema()      { return lerTexto(CHAVES.tema) || 'light'; },
     setTema(tema)  { gravarTexto(CHAVES.tema, tema); },
+    getLayout() { return lerTexto(CHAVES.layout) === 'original' ? 'original' : 'novo'; },
+    setLayout(layout) { gravarTexto(CHAVES.layout, layout === 'original' ? 'original' : 'novo'); },
 
     // ── Atendente logado ──────────────────────────────────────────────
     getAtendente()      { return lerTexto(CHAVES.atendente) || ''; },
@@ -98,7 +104,11 @@ window.App.Store = (function () {
     // ── Mapeamento de colunas, indexado pela assinatura da planilha ───
     getMapeamento(assinatura) {
       try {
-        const bruto = lerTexto(chaveMapa(assinatura));
+        let bruto = lerTexto(chaveMapa(assinatura));
+        // Reaproveita mapeamentos da versão anterior quando disponíveis.
+        if (!bruto) {
+          try { bruto = lerTexto(PREFIXO_MAPA + btoa(assinatura).slice(0, 40)); } catch (e) { /* Unicode sem chave antiga */ }
+        }
         return bruto ? JSON.parse(bruto) : null;
       } catch (e) { return null; }
     },

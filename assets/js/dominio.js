@@ -36,7 +36,7 @@ window.App.Dominio = (function () {
    */
   const CAMPOS = [
     { id: 'remessa',       label: 'Remessa / Nº do pedido',        obrigatorio: true,  candidatos: ['remessa', 'numero da remessa', 'numero do pedido', 'numero pedido', 'pedido', 'waybill', 'tracking', 'cod remessa', 'codigo remessa'] },
-    { id: 'problema',      label: 'Tipo de problema (nível 2)',     obrigatorio: true,  candidatos: ['tipo de item problematico nivel 2', 'tipo de item problematico nivel2', 'tipo de item problematico', 'problema nivel 2', 'problema nivel2', 'nivel 2', 'nivel2', 'tipo do problema', 'tipo problema'] },
+    { id: 'problema',      label: 'Tipo de problema (nível 2)',     obrigatorio: true,  candidatos: ['tipo de item problematico nivel 2', 'tipo de item problematico nivel2', 'tipo de item problematico', 'problema nivel 2', 'problema nivel2', 'nivel 2', 'nivel2', 'tipo do problema', 'tipo problema', 'problema'] },
     { id: 'base',          label: 'Base responsável',               obrigatorio: true,  candidatos: ['base', 'base responsavel', 'base responsável', 'base de distribuicao', 'base distribuicao', 'hub responsavel', 'hub'] },
     { id: 'statusTicket',  label: 'Status do Ticket',               obrigatorio: false, candidatos: ['status', 'status do ticket', 'status ticket', 'status da ocorrencia', 'status ocorrencia', 'status do chamado', 'situacao do ticket', 'situacao ticket'] },
     { id: 'assistenteResp',label: 'Assistente Responsável',         obrigatorio: false, candidatos: ['assistente', 'atendente', 'assistente responsavel', 'assistente responsável', 'atendente responsavel', 'atendente responsável', 'responsavel', 'responsável'] },
@@ -104,8 +104,10 @@ window.App.Dominio = (function () {
 
   function tratarValor(v) {
     if (v === null || v === undefined || String(v).trim() === '') return null;
-    const n = parseFloat(String(v).trim().replace(',', '.'));
-    return isNaN(n) ? null : n;
+    let texto = String(v).trim().replace(/R\$|\s/g, '');
+    if (texto.includes(',')) texto = texto.replace(/\./g, '').replace(',', '.');
+    const n = Number(texto);
+    return Number.isFinite(n) ? n : null;
   }
 
   function formatarValor(n) {
@@ -172,8 +174,19 @@ window.App.Dominio = (function () {
   /** Timestamp comparável para ordenar por prazo. Sem prazo vai para o fim. */
   function prazoTimestamp(v) {
     if (v === null || v === undefined || String(v).trim() === '') return Infinity;
-    if (typeof v === 'number') return Math.round((v - 25569) * 86400 * 1000);
+    if (typeof v === 'number') {
+      const d = dataDeSerialExcel(v);
+      if (d.getUTCHours() >= 17) d.setUTCHours(17, 0, 0, 0);
+      else if (d.getUTCHours() < 8) { d.setUTCDate(d.getUTCDate() - 1); d.setUTCHours(17, 0, 0, 0); }
+      return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes()).getTime();
+    }
     const s = String(v).trim();
+    const br = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s*(?:às|as|-)\s*(\d{1,2})(?:h|:)(\d{2})?)?$/);
+    if (br) {
+      const [, day, month, year, hour = '17', minute = '0'] = br;
+      const date = new Date(+year, +month - 1, +day, +hour, +minute);
+      return date.getFullYear() === +year && date.getMonth() === +month - 1 && date.getDate() === +day ? date.getTime() : Infinity;
+    }
     const m = s.match(/^(\d{1,2})\/(\d{1,2})\s*-\s*(\d{1,2})h?/);
     if (m) {
       const d = new Date(new Date().getFullYear(), parseInt(m[2]) - 1, parseInt(m[1]), parseInt(m[3]), 0, 0);
@@ -202,14 +215,15 @@ window.App.Dominio = (function () {
 
     const dados = raw.map(linha => {
       const problema = normalizarProblema(mapa.problema ? linha[mapa.problema] : '');
-      if (!problema) { ignorados++; return null; }
+      const remessa = mapa.remessa ? tratarNumero(linha[mapa.remessa]) : '';
+      if (!problema || !remessa) { ignorados++; return null; }
 
       const prazoRaw = mapa.prazo ? linha[mapa.prazo] : null;
       const valorNum = tratarValor(mapa.valor ? linha[mapa.valor] : null);
       const statusTicketRaw = texto(linha, mapa.statusTicket, '');
 
       return {
-        remessa:        mapa.remessa ? tratarNumero(linha[mapa.remessa]) : '',
+        remessa:        remessa,
         tel:            texto(linha, mapa.tel, ''),
         telEntregador:  texto(linha, mapa.telEntregador, ''),
         entregador:     mapa.entregador ? String(linha[mapa.entregador] || 'N/A').trim() : 'N/A',
@@ -238,9 +252,15 @@ window.App.Dominio = (function () {
   const ORDENACOES = {
     'valor-asc':  (a, b) => (a.row.valorNum ?? Infinity) - (b.row.valorNum ?? Infinity),
     'valor-desc': (a, b) => (b.row.valorNum ?? -Infinity) - (a.row.valorNum ?? -Infinity),
-    'prazo-asc':  (a, b) => a.row.prazoTs - b.row.prazoTs,
-    'prazo-desc': (a, b) => b.row.prazoTs - a.row.prazoTs,
+    'prazo-asc':  (a, b) => compararPrazo(a.row.prazoTs, b.row.prazoTs, 1),
+    'prazo-desc': (a, b) => compararPrazo(a.row.prazoTs, b.row.prazoTs, -1),
   };
+
+  function compararPrazo(a, b, ordem) {
+    if (!Number.isFinite(a)) return Number.isFinite(b) ? 1 : 0;
+    if (!Number.isFinite(b)) return -1;
+    return (a - b) * ordem;
+  }
 
   /**
    * Aplica filtros e ordenação, devolvendo `{ row, idx }` — `idx` é a posição
@@ -251,7 +271,7 @@ window.App.Dominio = (function () {
    */
   function filtrarEOrdenar(dados, criterios, estaConcluido) {
     const c = criterios || {};
-    const busca = String(c.busca || '').toLowerCase();
+    const busca = strip(c.busca);
 
     const itens = dados
       .map((row, idx) => ({ row, idx }))
@@ -259,7 +279,7 @@ window.App.Dominio = (function () {
         if (c.base && row.base !== c.base) return false;
         if (c.embarcador && row.embarcador !== c.embarcador) return false;
         if (c.problema && row.problema !== c.problema) return false;
-        if (busca && !row.remessa.includes(busca)) return false;
+        if (busca && !strip([row.remessa, row.entregador, row.embarcador, row.item, row.destinatario, row.rne].join(' ')).includes(busca)) return false;
         if (c.status === 'pendente' && estaConcluido(row)) return false;
         if (c.status === 'concluido' && !estaConcluido(row)) return false;
         if (c.statusTicket && row.statusTicket !== c.statusTicket) return false;
@@ -276,10 +296,17 @@ window.App.Dominio = (function () {
   function opcoesDeFiltro(dados) {
     const distintos = f => [...new Set(dados.map(f).filter(Boolean))].sort();
     return {
+<<<<<<< HEAD
       bases:        [...new Set(dados.map(r => r.base))].sort(),
       embarcadores: distintos(r => r.embarcador),
       problemas:    [...new Set(dados.map(r => r.problema))].sort(),
       assistentes:  distintos(r => r.assistenteResp),
+=======
+      bases:       [...new Set(dados.map(r => r.base))].sort(),
+      problemas:   [...new Set(dados.map(r => r.problema))].sort(),
+      assistentes: distintos(r => r.assistenteResp),
+      statusTickets: distintos(r => r.statusTicket),
+>>>>>>> f372530 (Integrate Claude Design with functional dashboard and standalone)
     };
   }
 

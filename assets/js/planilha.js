@@ -17,12 +17,13 @@ window.App.Planilha = (function () {
    * que tenha "base responsavel" no cabeçalho, senão a última do arquivo.
    */
   function encontrarAba(wb) {
+    if (!wb.SheetNames.length) throw new Error('o arquivo não contém abas');
     for (const nome of wb.SheetNames) {
       if (nome.toLowerCase().includes('export')) return nome;
     }
     for (const nome of wb.SheetNames) {
       const raw = XLSX.utils.sheet_to_json(wb.Sheets[nome], { defval: '', range: 0 });
-      if (raw.length > 1 && Object.keys(raw[0]).join(' ').toLowerCase().includes('base responsavel')) return nome;
+      if (raw.length && App.Dominio.strip(Object.keys(raw[0]).join(' ')).includes('base responsavel')) return nome;
     }
     return wb.SheetNames[wb.SheetNames.length - 1];
   }
