@@ -30,7 +30,7 @@ window.App.Templates = (function () {
   function ativoMercadoLivre(ctx) {
     return `Olá, *${ctx.nome}*!\n\n` +
       `Me chamo ${ctx.assistente} e sou da Transportadora J&T Express, parceira de entregas do *Mercado Livre*.\n` +
-      `Verificamos que você abriu uma reclamação referente ${ctx.incluirProduto && ctx.item !== 'N/A' ? 'ao produto *' + ctx.item + '*, ID' : 'ao pedido'} *${ctx.remessa}* e entregue dia *${ctx.data}*.\n\n` +
+      `Verificamos que você abriu uma reclamação referente ao produto *${ctx.item}*, ID *${ctx.remessa}* e entregue dia *${ctx.data}*.\n\n` +
       `Para que possamos auxiliar, escolha uma opção:\n\n` +
       `1 - Recebi o produto\n` +
       `2 - Não recebi o produto\n` +
