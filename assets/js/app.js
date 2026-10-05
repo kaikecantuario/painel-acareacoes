@@ -223,10 +223,7 @@
         onFechar: () => View.resetarInputArquivo(),
         onConfirmar: mapa => {
           Store.setMapeamento(assinatura, mapa);
-<<<<<<< HEAD
           const resultado = Dominio.processarDados(planilha.raw, mapa, View.getAtendente());
-=======
-          const resultado = Dominio.processarDados(planilha.raw, mapa);
           if (!resultado.dados.length) { alert('Nenhuma acareação válida encontrada.'); return; }
           arquivoCarregado = file;
           Atribuir.guardarArquivo(file);
@@ -234,7 +231,6 @@
           modoSelecaoObs = false;
           View.mostrarModoSelecao(false);
           View.resetarFiltros();
->>>>>>> f372530 (Integrate Claude Design with functional dashboard and standalone)
           acareacoes = resultado.dados;
           finalizarCarregamento(planilha.abaNome, planilha.raw.length, resultado.ignorados);
         },

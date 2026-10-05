@@ -296,17 +296,11 @@ window.App.Dominio = (function () {
   function opcoesDeFiltro(dados) {
     const distintos = f => [...new Set(dados.map(f).filter(Boolean))].sort();
     return {
-<<<<<<< HEAD
       bases:        [...new Set(dados.map(r => r.base))].sort(),
       embarcadores: distintos(r => r.embarcador),
       problemas:    [...new Set(dados.map(r => r.problema))].sort(),
       assistentes:  distintos(r => r.assistenteResp),
-=======
-      bases:       [...new Set(dados.map(r => r.base))].sort(),
-      problemas:   [...new Set(dados.map(r => r.problema))].sort(),
-      assistentes: distintos(r => r.assistenteResp),
       statusTickets: distintos(r => r.statusTicket),
->>>>>>> f372530 (Integrate Claude Design with functional dashboard and standalone)
     };
   }
 

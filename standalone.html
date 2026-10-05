@@ -769,8 +769,8 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
   <div class="upload-area" id="upload-area" role="button" tabindex="0" aria-label="Carregar planilha Excel">
     <i class="ti ti-file-spreadsheet"></i>
     Clique para carregar o Excel do BI
-    <div class="upload-hint">Arquivo .xlsx exportado do BI</div>
-    <input type="file" id="file-input" accept=".xlsx,.xls" style="display:none">
+    <div class="upload-hint">Aceita .xlsx, .xls, .csv e .ods (WPS: salve como .xlsx)</div>
+    <input type="file" id="file-input" accept=".xlsx,.xls,.csv,.ods" style="display:none">
   </div>
 
   <div class="resumo">
@@ -804,6 +804,10 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
         <label class="campo-filtro">
           <span>Base</span>
           <select id="filter-base"><option value="">Todas as bases</option></select>
+        </label>
+        <label class="campo-filtro">
+          <span>Embarcador</span>
+          <select id="filter-embarcador"><option value="">Todos os embarcadores</option></select>
         </label>
         <label class="campo-filtro">
           <span>Tipo de problema</span>
@@ -1147,12 +1151,21 @@ window.App.Dominio = (function () {
     return (h === 0 && mi === 0) ? dataUTC(d) : `${dataUTC(d)} \u00e0s ${pad(h)}h${pad(mi)}`;
   }
 
+  /** Nomes do time de plant\u00e3o \u2014 expediente das 9h \u00e0s 18h. */
+  const ATENDENTES_PLANTAO = ['sabrina', 'malu', 'diogo', 'miqueias', 'renan', 'edja', 'wilson', 'lucas', 'ricardo'];
+
+  /** O nome digitado em "Respons\u00e1vel pelos atendimentos" \u00e9 de algu\u00e9m do plant\u00e3o? */
+  function ehPlantao(nomeAtendente) {
+    return ATENDENTES_PLANTAO.includes(strip(nomeAtendente).replace(/\s+/g, ' '));
+  }
+
   /**
-   * O prazo regional vence \u00e0s 17h. Fora do expediente o BI grava hor\u00e1rios
-   * que n\u00e3o correspondem ao prazo real, ent\u00e3o normalizamos:
-   * depois das 17h vira 17h do mesmo dia; antes das 8h, 17h do dia anterior.
+   * O prazo regional vence \u00e0s 17h (plant\u00e3o: 18h). Fora do expediente o BI
+   * grava hor\u00e1rios que n\u00e3o correspondem ao prazo real, ent\u00e3o normalizamos:
+   * depois do fim do expediente vira o fim do expediente no mesmo dia;
+   * antes do in\u00edcio do expediente, o fim do expediente no dia anterior.
    */
-  function ajustarVencimento(v) {
+  function ajustarVencimento(v, plantao) {
     if (ehVazio(v)) return 'N/A';
     if (typeof v !== 'number') {
       const s = String(v).trim();
@@ -1160,9 +1173,11 @@ window.App.Dominio = (function () {
     }
     const d = dataDeSerialExcel(v);
     if (isNaN(d)) return String(v).trim() || 'N/A';
+    const inicio = plantao ? 9 : 8;
+    const fim = plantao ? 18 : 17;
     const h = d.getUTCHours();
-    if (h >= 17) return `${dataUTC(d)} \u00e0s 17h00`;
-    if (h < 8) return `${dataUTC(new Date(d.getTime() - 86400000))} \u00e0s 17h00`;
+    if (h >= fim) return `${dataUTC(d)} \u00e0s ${fim}h00`;
+    if (h < inicio) return `${dataUTC(new Date(d.getTime() - 86400000))} \u00e0s ${fim}h00`;
     return `${dataUTC(d)} \u00e0s ${pad(h)}h${pad(d.getUTCMinutes())}`;
   }
 
@@ -1203,8 +1218,9 @@ window.App.Dominio = (function () {
    * campo \u2192 nome de coluna. Linhas cujo tipo de problema n\u00e3o \u00e9 uma acarea\u00e7\u00e3o
    * conhecida s\u00e3o descartadas e contadas em `ignorados`.
    */
-  function processarDados(raw, mapa) {
+  function processarDados(raw, mapa, atendente) {
     let ignorados = 0;
+    const plantao = ehPlantao(atendente);
     const texto = (linha, coluna, padrao) => coluna ? String(linha[coluna] || padrao).trim() : padrao;
 
     const dados = raw.map(linha => {
@@ -1222,7 +1238,7 @@ window.App.Dominio = (function () {
         telEntregador:  texto(linha, mapa.telEntregador, ''),
         entregador:     mapa.entregador ? String(linha[mapa.entregador] || 'N/A').trim() : 'N/A',
         dataBaixa:      mapa.dataBaixa ? formatarDataExcel(linha[mapa.dataBaixa]) : 'N/A',
-        vencimento:     prazoRaw != null ? ajustarVencimento(prazoRaw) : 'N/A',
+        vencimento:     prazoRaw != null ? ajustarVencimento(prazoRaw, plantao) : 'N/A',
         prazoTs:        prazoRaw != null ? prazoTimestamp(prazoRaw) : Infinity,
         valorNum:       valorNum,
         valorFmt:       formatarValor(valorNum),
@@ -1260,7 +1276,7 @@ window.App.Dominio = (function () {
    * Aplica filtros e ordena\u00e7\u00e3o, devolvendo `{ row, idx }` \u2014 `idx` \u00e9 a posi\u00e7\u00e3o
    * na lista original, que \u00e9 como as a\u00e7\u00f5es identificam a acarea\u00e7\u00e3o.
    *
-   * @param {object}   criterios      { base, problema, status, statusTicket, assistente, busca, ordenacao }
+   * @param {object}   criterios      { base, embarcador, problema, status, statusTicket, assistente, busca, ordenacao }
    * @param {function} estaConcluido  (row) => boolean
    */
   function filtrarEOrdenar(dados, criterios, estaConcluido) {
@@ -1271,6 +1287,7 @@ window.App.Dominio = (function () {
       .map((row, idx) => ({ row, idx }))
       .filter(({ row }) => {
         if (c.base && row.base !== c.base) return false;
+        if (c.embarcador && row.embarcador !== c.embarcador) return false;
         if (c.problema && row.problema !== c.problema) return false;
         if (busca && !strip([row.remessa, row.entregador, row.embarcador, row.item, row.destinatario, row.rne].join(' ')).includes(busca)) return false;
         if (c.status === 'pendente' && estaConcluido(row)) return false;
@@ -1289,9 +1306,10 @@ window.App.Dominio = (function () {
   function opcoesDeFiltro(dados) {
     const distintos = f => [...new Set(dados.map(f).filter(Boolean))].sort();
     return {
-      bases:       [...new Set(dados.map(r => r.base))].sort(),
-      problemas:   [...new Set(dados.map(r => r.problema))].sort(),
-      assistentes: distintos(r => r.assistenteResp),
+      bases:        [...new Set(dados.map(r => r.base))].sort(),
+      embarcadores: distintos(r => r.embarcador),
+      problemas:    [...new Set(dados.map(r => r.problema))].sort(),
+      assistentes:  distintos(r => r.assistenteResp),
       statusTickets: distintos(r => r.statusTicket),
     };
   }
@@ -1318,6 +1336,7 @@ window.App.Dominio = (function () {
     formatarValor,
     formatarDataExcel,
     ajustarVencimento,
+    ehPlantao,
     prazoTimestamp,
     isNumeroInvalido,
     processarDados,
@@ -1526,17 +1545,46 @@ window.App.Planilha = (function () {
     return mapa;
   }
 
+  /** Formato nativo do WPS: o XLSX n\u00e3o l\u00ea e ainda aceita o arquivo em sil\u00eancio. */
+  const EXT_NAO_SUPORTADAS = ['et', 'ett'];
+
   /**
-   * L\u00ea o .xlsx escolhido pelo usu\u00e1rio.
+   * CSV salvo em UTF-8 sem BOM sai com acento quebrado quando lido como bytes.
+   * Devolve o texto decodificado, ou null se n\u00e3o for UTF-8 v\u00e1lido (ANSI/cp1252),
+   * caso em que o XLSX resolve pelo caminho normal.
+   */
+  function decodificarUtf8(bytes) {
+    try {
+      const txt = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+      return txt.charCodeAt(0) === 0xFEFF ? txt.slice(1) : txt;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /**
+   * L\u00ea a planilha escolhida (.xlsx, .xls, .csv ou .ods).
    * @returns {Promise<{abaNome: string, raw: object[], cols: string[]}>}
    */
   function ler(file) {
     return new Promise((resolve, reject) => {
+      const ext = (file.name.split('.').pop() || '').toLowerCase();
+      if (EXT_NAO_SUPORTADAS.includes(ext)) {
+        reject(new Error('formato nativo do WPS (.' + ext + ') n\u00e3o \u00e9 suportado \u2014 no WPS use ' +
+          'Arquivo > Salvar como > Pasta de trabalho do Excel (*.xlsx)'));
+        return;
+      }
       const reader = new FileReader();
       reader.onerror = () => reject(new Error('n\u00e3o foi poss\u00edvel ler o arquivo'));
       reader.onload = ev => {
         try {
-          const wb = XLSX.read(ev.target.result, { type: 'array', cellDates: false });
+          let dados = ev.target.result;
+          let tipo = 'array';
+          if (ext === 'csv') {
+            const txt = decodificarUtf8(new Uint8Array(dados));
+            if (txt !== null) { dados = txt; tipo = 'string'; }
+          }
+          const wb = XLSX.read(dados, { type: tipo, cellDates: false });
           const abaNome = encontrarAba(wb);
           const raw = XLSX.utils.sheet_to_json(wb.Sheets[abaNome], { defval: '', raw: true });
           resolve({ abaNome, raw, cols: raw.length ? Object.keys(raw[0]) : [] });
@@ -2193,6 +2241,7 @@ window.App.View = (function () {
 
   const OPCAO_PADRAO = {
     'filter-base':       'Todas as bases',
+    'filter-embarcador': 'Todos os embarcadores',
     'filter-problema':   'Todos os tipos',
     'filter-assistente': 'Todos os assistentes',
   };
@@ -2263,7 +2312,7 @@ window.App.View = (function () {
   // \u2500\u2500\u2500 Filtros \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 
   const IDS_FILTRO = [
-    'filter-base', 'filter-problema', 'filter-status', 'filter-ticket-status',
+    'filter-base', 'filter-embarcador', 'filter-problema', 'filter-status', 'filter-ticket-status',
     'filter-assistente', 'filter-search', 'sort-order',
   ];
 
@@ -2271,6 +2320,7 @@ window.App.View = (function () {
   function lerFiltros() {
     return {
       base:         $('filter-base').value,
+      embarcador:   $('filter-embarcador').value,
       problema:     $('filter-problema').value,
       status:       $('filter-status').value,
       statusTicket: $('filter-ticket-status').value,
@@ -2293,14 +2343,16 @@ window.App.View = (function () {
 
   function preencherFiltros(opcoes) {
     preencherSelect('filter-base', opcoes.bases);
+    preencherSelect('filter-embarcador', opcoes.embarcadores);
     preencherSelect('filter-problema', opcoes.problemas);
     preencherSelect('filter-assistente', opcoes.assistentes);
     if (!opcoes.statusTickets.includes('para_atribuir')) $('filter-ticket-status').value = '';
   }
 
   function resetarFiltros() {
-    $('filter-base').innerHTML     = `<option value="">${OPCAO_PADRAO['filter-base']}</option>`;
-    $('filter-problema').innerHTML = `<option value="">${OPCAO_PADRAO['filter-problema']}</option>`;
+    $('filter-base').innerHTML       = `<option value="">${OPCAO_PADRAO['filter-base']}</option>`;
+    $('filter-embarcador').innerHTML = `<option value="">${OPCAO_PADRAO['filter-embarcador']}</option>`;
+    $('filter-problema').innerHTML   = `<option value="">${OPCAO_PADRAO['filter-problema']}</option>`;
     $('filter-search').value = '';
     $('sort-order').value = '';
     $('filter-status').value = '';
@@ -2348,7 +2400,7 @@ window.App.View = (function () {
   function renderBulkBar(qtd) {
     $('bulk-bar').style.display = 'flex';
     $('bulk-count').textContent =
-      `${qtd} ticket${qtd === 1 ? '' : 's'} vis\u00edvel${qtd === 1 ? '' : 'eis'}`;
+      `${qtd} ticket${qtd === 1 ? '' : 's'} ${qtd === 1 ? 'vis\u00edvel' : 'vis\u00edveis'}`;
   }
 
   // \u2500\u2500\u2500 Sele\u00e7\u00e3o e observa\u00e7\u00e3o em massa \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
@@ -2514,7 +2566,7 @@ window.App.View = (function () {
     const novo = document.createElement('input');
     novo.type = 'file';
     novo.id = 'file-input';
-    novo.accept = '.xlsx,.xls';
+    novo.accept = '.xlsx,.xls,.csv,.ods';
     novo.style.display = 'none';
     novo.addEventListener('change', tratarSelecaoArquivo);
     antigo.replaceWith(novo);
@@ -2919,7 +2971,7 @@ window.App.View = (function () {
         onFechar: () => View.resetarInputArquivo(),
         onConfirmar: mapa => {
           Store.setMapeamento(assinatura, mapa);
-          const resultado = Dominio.processarDados(planilha.raw, mapa);
+          const resultado = Dominio.processarDados(planilha.raw, mapa, View.getAtendente());
           if (!resultado.dados.length) { alert('Nenhuma acarea\u00e7\u00e3o v\u00e1lida encontrada.'); return; }
           arquivoCarregado = file;
           Atribuir.guardarArquivo(file);
@@ -2932,7 +2984,8 @@ window.App.View = (function () {
         },
       });
     }).catch(err => {
-      alert('Erro ao ler o arquivo: ' + err.message);
+      alert('Erro ao ler o arquivo: ' + err.message +
+        '\n\nFormatos aceitos: .xlsx, .xls, .csv e .ods.');
       console.error(err);
     });
   }

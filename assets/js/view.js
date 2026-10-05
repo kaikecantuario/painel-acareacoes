@@ -181,11 +181,7 @@ window.App.View = (function () {
   function renderBulkBar(qtd) {
     $('bulk-bar').style.display = 'flex';
     $('bulk-count').textContent =
-<<<<<<< HEAD
-      `${qtd} ticket${qtd === 1 ? '' : 's'} ${qtd === 1 ? 'visível' : 'visíveis'} (respeitando os filtros atuais)`;
-=======
-      `${qtd} ticket${qtd === 1 ? '' : 's'} visível${qtd === 1 ? '' : 'eis'}`;
->>>>>>> f372530 (Integrate Claude Design with functional dashboard and standalone)
+      `${qtd} ticket${qtd === 1 ? '' : 's'} ${qtd === 1 ? 'visível' : 'visíveis'}`;
   }
 
   // ─── Seleção e observação em massa ──────────────────────────────────
