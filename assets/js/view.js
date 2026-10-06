@@ -137,7 +137,7 @@ window.App.View = (function () {
     $('filter-search').value = '';
     $('sort-order').value = '';
     $('filter-status').value = '';
-    $('filter-ticket-status').value = 'para_atribuir';
+    $('filter-ticket-status').value = '';
     $('filter-assistente').value = '';
   }
 
