@@ -1,7 +1,7 @@
-/**
- * UI — utilidades de interface sem vínculo com o domínio: toast e cópia
- * para a área de transferência. Servem a qualquer tela.
- */
+   
+                                                                        
+                                                        
+   
 window.App = window.App || {};
 window.App.UI = (function () {
   'use strict';
@@ -20,7 +20,7 @@ window.App.UI = (function () {
     timerToast = setTimeout(() => el.classList.remove('show'), DURACAO_TOAST);
   }
 
-  /** Fallback para navegadores/contextos sem a Clipboard API (inclui file://). */
+                                                                                  
   function copiarViaTextarea(texto) {
     const foco = document.activeElement;
     const ta = document.createElement('textarea');
@@ -37,7 +37,7 @@ window.App.UI = (function () {
     }
   }
 
-  /** Marca o botão como "Copiado!" e restaura o rótulo original depois. */
+                                                                           
   function piscarBotao(botao) {
     if (!botao) return;
     const anterior = timersBotao.get(botao);
@@ -53,10 +53,10 @@ window.App.UI = (function () {
     timersBotao.set(botao, { timer, original });
   }
 
-  /**
-   * @param {string} texto
-   * @param {object} opcoes  { botao?: HTMLElement, mensagem?: string }
-   */
+     
+                          
+                                                                       
+     
   function copiar(texto, opcoes) {
     const o = opcoes || {};
     const confirmar = () => {

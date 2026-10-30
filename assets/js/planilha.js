@@ -1,21 +1,21 @@
-/**
- * Planilha — todo o contato com a biblioteca XLSX fica aqui.
- *
- * Leitura do arquivo do BI, detecção automática das colunas e exportação da
- * lista filtrada. Nenhum outro módulo referencia `XLSX`.
- */
+   
+                                                             
+  
+                                                                            
+                                                         
+   
 window.App = window.App || {};
 window.App.Planilha = (function () {
   'use strict';
 
   const App = window.App;
 
-  // ─── Leitura ────────────────────────────────────────────────────────
+                                                                         
 
-  /**
-   * Escolhe a aba de dados: prioriza uma chamada "export", senão a primeira
-   * que tenha "base responsavel" no cabeçalho, senão a última do arquivo.
-   */
+     
+                                                                            
+                                                                          
+     
   function encontrarAba(wb) {
     if (!wb.SheetNames.length) throw new Error('o arquivo não contém abas');
     for (const nome of wb.SheetNames) {
@@ -28,16 +28,16 @@ window.App.Planilha = (function () {
     return wb.SheetNames[wb.SheetNames.length - 1];
   }
 
-  /** Identidade do layout da planilha — usada para reaproveitar o mapeamento salvo. */
+                                                                                       
   function assinatura(cols) {
     return cols.slice().sort().join('|');
   }
 
-  /**
-   * Acha a coluna que melhor corresponde a um campo: primeiro por nome exato
-   * (sem acento), depois por conter o candidato. Colunas já reivindicadas por
-   * um campo anterior são puladas.
-   */
+     
+                                                                             
+                                                                              
+                                   
+     
   function detectarColuna(cols, candidatos, usadas) {
     const strip = App.Dominio.strip;
     usadas = usadas || new Set();
@@ -53,7 +53,7 @@ window.App.Planilha = (function () {
     return null;
   }
 
-  /** Mapa campo → coluna para todos os campos, respeitando a ordem de prioridade. */
+                                                                                     
   function detectarMapa(cols, campos) {
     const mapa = {};
     const usadas = new Set();
@@ -65,14 +65,14 @@ window.App.Planilha = (function () {
     return mapa;
   }
 
-  /** Formato nativo do WPS: o XLSX não lê e ainda aceita o arquivo em silêncio. */
+                                                                                   
   const EXT_NAO_SUPORTADAS = ['et', 'ett'];
 
-  /**
-   * CSV salvo em UTF-8 sem BOM sai com acento quebrado quando lido como bytes.
-   * Devolve o texto decodificado, ou null se não for UTF-8 válido (ANSI/cp1252),
-   * caso em que o XLSX resolve pelo caminho normal.
-   */
+     
+                                                                               
+                                                                                 
+                                                    
+     
   function decodificarUtf8(bytes) {
     try {
       const txt = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
@@ -82,10 +82,10 @@ window.App.Planilha = (function () {
     }
   }
 
-  /**
-   * Lê a planilha escolhida (.xlsx, .xls, .csv ou .ods).
-   * @returns {Promise<{abaNome: string, raw: object[], cols: string[]}>}
-   */
+     
+                                                         
+                                                                         
+     
   function ler(file) {
     return new Promise((resolve, reject) => {
       const ext = (file.name.split('.').pop() || '').toLowerCase();
@@ -116,9 +116,9 @@ window.App.Planilha = (function () {
     });
   }
 
-  // ─── Exportação ─────────────────────────────────────────────────────
+                                                                         
 
-  /** Colunas do arquivo exportado, na ordem — cabeçalho → como extrair da acareação. */
+                                                                                        
   const COLUNAS_EXPORT = [
     ['Remessa',                r => r.remessa],
     ['Status do Ticket',       r => r.statusTicketRaw || ''],
@@ -143,7 +143,7 @@ window.App.Planilha = (function () {
            `_${pad(agora.getHours())}${pad(agora.getMinutes())}.xlsx`;
   }
 
-  /** Gera e dispara o download do .xlsx com as acareações informadas. */
+                                                                         
   function exportarAcareacoes(rows) {
     const linhas = rows.map(row => {
       const linha = {};

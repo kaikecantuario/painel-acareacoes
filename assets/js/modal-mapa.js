@@ -1,17 +1,17 @@
-/**
- * ModalMapa — diálogo de confirmação do mapeamento campo → coluna.
- *
- * Autocontido: monta o HTML, valida os obrigatórios e devolve o mapa pronto
- * pelo callback `onConfirmar`. O estado do diálogo aberto vive no closure,
- * não em variáveis globais.
- */
+   
+                                                                   
+  
+                                                                            
+                                                                           
+                            
+   
 window.App = window.App || {};
 window.App.ModalMapa = (function () {
   'use strict';
 
   const App = window.App;
 
-  // Diálogo atualmente aberto: { cols, campos, onConfirmar, onFechar }
+                                                                       
   let aberto = null;
 
   function container() {
@@ -24,7 +24,7 @@ window.App.ModalMapa = (function () {
 
   function escaparHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-  /** Verde = detectado, vermelho = obrigatório sem coluna, neutro = opcional vazio. */
+                                                                                       
   function classeDoSelect(campo, valor) {
     if (valor) return 'auto';
     return campo.obrigatorio ? 'missing' : '';
@@ -74,7 +74,7 @@ window.App.ModalMapa = (function () {
     if (aoFechar) aoFechar();
   }
 
-  /** Lê os selects; devolve null (e alerta) se faltar algum obrigatório. */
+                                                                            
   function coletarMapa() {
     const mapa = {};
     const faltando = [];
@@ -108,9 +108,9 @@ window.App.ModalMapa = (function () {
 
   const ACOES = { fechar, confirmar, limpar: limparSalvos };
 
-  /**
-   * @param {object} opcoes { cols, mapa, foiSalvo, campos?, onConfirmar, onFechar }
-   */
+     
+                                                                                    
+     
   function abrir(opcoes) {
     const cols = opcoes.cols;
     const campos = opcoes.campos || App.Dominio.CAMPOS;
@@ -127,16 +127,16 @@ window.App.ModalMapa = (function () {
     container().querySelector('select').focus();
   }
 
-  // Listeners registrados uma única vez, por delegação: o conteúdo do
-  // container é recriado a cada abertura, mas o container em si não.
+                                                                      
+                                                                     
   container().addEventListener('click', e => {
     if (!aberto) return;
-    if (e.target.classList.contains('modal-overlay')) { fechar(); return; } // clique fora do diálogo
+    if (e.target.classList.contains('modal-overlay')) { fechar(); return; }                          
     const botao = e.target.closest('[data-acao]');
     if (botao && ACOES[botao.dataset.acao]) ACOES[botao.dataset.acao]();
   });
 
-  // Recolore o select conforme o usuário troca a coluna escolhida
+                                                                  
   container().addEventListener('change', e => {
     if (!aberto) return;
     const sel = e.target.closest('select[id^="map-"]');

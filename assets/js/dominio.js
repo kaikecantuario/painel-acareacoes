@@ -1,16 +1,16 @@
-/**
- * Dominio — regras de negócio das acareações.
- *
- * Só funções puras: recebe dados, devolve dados. Não toca no DOM, no
- * localStorage nem no XLSX. Onde precisa saber se uma remessa está concluída
- * ou é presencial, recebe o predicado por parâmetro em vez de consultar o
- * estado global.
- */
+   
+                                              
+  
+                                                                     
+                                                                             
+                                                                          
+                 
+   
 window.App = window.App || {};
 window.App.Dominio = (function () {
   'use strict';
 
-  // ─── Vocabulário do BI ──────────────────────────────────────────────
+                                                                         
 
   const MAPA_PROBLEMAS = [
     { chaves: ['[latam] delivered but not received', 'delivered but not received'], saida: 'Assinado não recebido' },
@@ -28,12 +28,12 @@ window.App.Dominio = (function () {
     temu: 'Temu', wepink: 'WePink', jequiti: 'Jequiti', tiktok: 'TikTok',
   };
 
-  /**
-   * Campos que o painel consome, com os nomes de coluna que já apareceram no BI.
-   * A ordem importa: a detecção automática reserva a coluna para o primeiro
-   * campo que a reivindicar (por isso `assistenteResp` vem antes de `tel`, e
-   * `dataBaixa` lista "data da entrega" primeiro).
-   */
+     
+                                                                                 
+                                                                            
+                                                                             
+                                                   
+     
   const CAMPOS = [
     { id: 'remessa',       label: 'Remessa / Nº do pedido',        obrigatorio: true,  candidatos: ['remessa', 'numero da remessa', 'numero do pedido', 'numero pedido', 'pedido', 'waybill', 'tracking', 'cod remessa', 'codigo remessa'] },
     { id: 'problema',      label: 'Tipo de problema (nível 2)',     obrigatorio: true,  candidatos: ['tipo de item problematico nivel 2', 'tipo de item problematico nivel2', 'tipo de item problematico', 'problema nivel 2', 'problema nivel2', 'nivel 2', 'nivel2', 'tipo do problema', 'tipo problema', 'problema'] },
@@ -48,19 +48,19 @@ window.App.Dominio = (function () {
     { id: 'valor',         label: 'Valor do produto',               obrigatorio: false, candidatos: ['valor', 'preco', 'price', 'valor declarado', 'valor do produto', 'valor do pedido', 'valor mercadoria', 'valor nota fiscal', 'valor nf'] },
     { id: 'item',          label: 'Item / Descrição do produto',    obrigatorio: false, candidatos: ['conteudo do pacote', 'conteudo', 'produto', 'descricao', 'description', 'descricao do produto', 'descricao do item', 'nome do produto', 'nome do item', 'descricao produto', 'descricao item', 'item'] },
     { id: 'embarcador',    label: 'Embarcador / Origem do pedido',  obrigatorio: false, candidatos: ['embarcador', 'loja', 'origem', 'origem do pedido', 'nome do embarcador', 'lojista', 'shipper', 'seller'] },
-    // 'nome destainario' cobre o typo que aparece em algumas exportações
+                                                                         
     { id: 'destinatario',  label: 'Nome do destinatário',           obrigatorio: false, candidatos: ['destinatario', 'destinatário', 'cliente', 'nome destainario', 'nome do destinatario', 'nome do destinatário', 'nome destinatario', 'nome destinatário', 'nome do cliente', 'recipient'] },
     { id: 'rne',           label: 'RNE / Focal',                    obrigatorio: false, candidatos: ['rne', 'focal', 'numero rne', 'cod rne'] },
   ];
 
-  // ─── Normalização ───────────────────────────────────────────────────
+                                                                         
 
-  /** Minúsculas, sem espaços nas pontas e sem acentos — base de toda comparação. */
+                                                                                    
   function strip(s) {
     return String(s || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
 
-  /** Converte o tipo de problema do BI num rótulo canônico; null se não for acareação. */
+                                                                                          
   function normalizarProblema(v) {
     const s = strip(v);
     if (!s) return null;
@@ -72,7 +72,7 @@ window.App.Dominio = (function () {
     return null;
   }
 
-  /** Reduz as várias grafias de status do BI a uma chave canônica. */
+                                                                      
   function normalizarStatusTicket(v) {
     const s = strip(v);
     if (!s) return 'sem_status';
@@ -91,9 +91,9 @@ window.App.Dominio = (function () {
     return s.replace(/\b\w/g, c => c.toUpperCase());
   }
 
-  // ─── Conversão de valores da planilha ───────────────────────────────
+                                                                         
 
-  /** Códigos numéricos (remessa) chegam como float do Excel; arredonda sem virar notação científica. */
+                                                                                                        
   function tratarNumero(v) {
     if (v === null || v === undefined || String(v).trim() === '') return '';
     const s = String(v).trim();
@@ -117,7 +117,7 @@ window.App.Dominio = (function () {
 
   const pad = n => String(n).padStart(2, '0');
 
-  /** Serial do Excel → Date. O epoch do Excel é 1899-12-30, daí o -25569. */
+                                                                             
   function dataDeSerialExcel(serial) {
     return new Date(Math.round((serial - 25569) * 86400 * 1000));
   }
@@ -141,20 +141,20 @@ window.App.Dominio = (function () {
     return (h === 0 && mi === 0) ? dataUTC(d) : `${dataUTC(d)} às ${pad(h)}h${pad(mi)}`;
   }
 
-  /** Nomes do time de plantão — expediente das 9h às 18h. */
+                                                             
   const ATENDENTES_PLANTAO = ['sabrina', 'malu', 'diogo', 'miqueias', 'renan', 'edja', 'wilson', 'lucas', 'ricardo'];
 
-  /** O nome digitado em "Responsável pelos atendimentos" é de alguém do plantão? */
+                                                                                    
   function ehPlantao(nomeAtendente) {
     return ATENDENTES_PLANTAO.includes(strip(nomeAtendente).replace(/\s+/g, ' '));
   }
 
-  /**
-   * O prazo regional vence às 17h (plantão: 18h). Fora do expediente o BI
-   * grava horários que não correspondem ao prazo real, então normalizamos:
-   * depois do fim do expediente vira o fim do expediente no mesmo dia;
-   * antes do início do expediente, o fim do expediente no dia anterior.
-   */
+     
+                                                                          
+                                                                           
+                                                                       
+                                                                        
+     
   function ajustarVencimento(v, plantao) {
     if (ehVazio(v)) return 'N/A';
     if (typeof v !== 'number') {
@@ -171,7 +171,7 @@ window.App.Dominio = (function () {
     return `${dataUTC(d)} às ${pad(h)}h${pad(d.getUTCMinutes())}`;
   }
 
-  /** Timestamp comparável para ordenar por prazo. Sem prazo vai para o fim. */
+                                                                               
   function prazoTimestamp(v) {
     if (v === null || v === undefined || String(v).trim() === '') return Infinity;
     if (typeof v === 'number') {
@@ -201,13 +201,13 @@ window.App.Dominio = (function () {
     return !t || t === '0' || t === '00' || t.length < 8;
   }
 
-  // ─── Montagem das acareações ────────────────────────────────────────
+                                                                         
 
-  /**
-   * Converte as linhas cruas da planilha em acareações, usando o mapa
-   * campo → nome de coluna. Linhas cujo tipo de problema não é uma acareação
-   * conhecida são descartadas e contadas em `ignorados`.
-   */
+     
+                                                                      
+                                                                             
+                                                         
+     
   function processarDados(raw, mapa, atendente) {
     let ignorados = 0;
     const plantao = ehPlantao(atendente);
@@ -247,7 +247,7 @@ window.App.Dominio = (function () {
     return { dados, ignorados };
   }
 
-  // ─── Consultas sobre a lista carregada ──────────────────────────────
+                                                                         
 
   const ORDENACOES = {
     'valor-asc':  (a, b) => (a.row.valorNum ?? Infinity) - (b.row.valorNum ?? Infinity),
@@ -262,13 +262,13 @@ window.App.Dominio = (function () {
     return (a - b) * ordem;
   }
 
-  /**
-   * Aplica filtros e ordenação, devolvendo `{ row, idx }` — `idx` é a posição
-   * na lista original, que é como as ações identificam a acareação.
-   *
-   * @param {object}   criterios      { base, embarcador, problema, status, statusTicket, assistente, busca, ordenacao }
-   * @param {function} estaConcluido  (row) => boolean
-   */
+     
+                                                                              
+                                                                    
+    
+                                                                                                                        
+                                                      
+     
   function filtrarEOrdenar(dados, criterios, estaConcluido) {
     const c = criterios || {};
     const busca = strip(c.busca);
@@ -292,7 +292,7 @@ window.App.Dominio = (function () {
     return itens;
   }
 
-  /** Valores distintos para popular os selects de filtro. */
+                                                             
   function opcoesDeFiltro(dados) {
     const distintos = f => [...new Set(dados.map(f).filter(Boolean))].sort();
     return {
@@ -304,7 +304,7 @@ window.App.Dominio = (function () {
     };
   }
 
-  /** Contadores do topo do painel — sempre sobre a lista inteira, não a filtrada. */
+                                                                                     
   function calcularStats(dados, ehPresencial, estaConcluido) {
     const presencial = dados.filter(ehPresencial).length;
     return {

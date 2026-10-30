@@ -1,5 +1,5 @@
-/* Fundo do Claude Design. A animação para em abas ocultas, no layout original
-   e quando o usuário prefere menos movimento. Não altera dados do painel. */
+                                                                              
+                                                                             
 (function () {
   'use strict';
   const canvas = document.getElementById('bg-flow');

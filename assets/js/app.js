@@ -1,33 +1,33 @@
-/**
- * app — controlador do painel.
- *
- * Guarda a lista carregada e faz a ponte entre os módulos: lê o estado no
- * Store, pede as regras ao Dominio, manda a View desenhar. É o único lugar
- * onde as camadas se encontram; nenhuma delas chama a outra pelas costas.
- */
+   
+                               
+  
+                                                                          
+                                                                           
+                                                                          
+   
 (function () {
   'use strict';
 
   const { Store, Dominio, Templates, Planilha, UI, ModalMapa, View, Atribuir } = window.App;
 
-  /** Acareações da planilha carregada. O índice na lista é o id usado pelos cards. */
+                                                                                      
   let acareacoes = [];
 
-  /** O .xlsx original — a atribuição no JMS precisa do arquivo, não das linhas
-   *  já processadas (ver o cabeçalho de atribuir.js). */
+                                                                               
+                                                         
   let arquivoCarregado = null;
 
-  /** Índices marcados para as ações em massa, e se o modo de seleção está ligado. */
+                                                                                     
   const selecionados = new Set();
   let modoSelecaoObs = false;
 
-  // ─── Predicados de estado (Store + regras) ──────────────────────────
+                                                                         
 
   const semTelefone   = row => Dominio.isNumeroInvalido(row.tel);
   const ehPresencial  = row => semTelefone(row) || Store.isPresencial(row.remessa);
   const estaConcluido = row => Store.isConcluido(row.remessa);
 
-  // ─── Renderização ───────────────────────────────────────────────────
+                                                                         
 
   function paraItemDeCard({ row, idx }) {
     return {
@@ -61,7 +61,7 @@
     View.renderCards(itens.map(paraItemDeCard), { modoSelecao: modoSelecaoObs });
   }
 
-  // ─── Ações de um card ───────────────────────────────────────────────
+                                                                         
 
   function copiarAtivo(row, botao) {
     UI.copiar(
@@ -133,7 +133,7 @@
     if (row && acao) acao(row, evento);
   }
 
-  // ─── Ações em massa ─────────────────────────────────────────────────
+                                                                         
 
   function copiarRemessasFiltradas(botao) {
     const itens = visiveis();
@@ -194,7 +194,7 @@
     fecharObsEmMassa();
   }
 
-  // ─── Carregamento da planilha ───────────────────────────────────────
+                                                                         
 
   function finalizarCarregamento(abaNome, totalLinhas, ignorados) {
     View.renderInfoBar({
@@ -253,7 +253,7 @@
     View.resetarInputArquivo().click();
   }
 
-  // ─── Inicialização ──────────────────────────────────────────────────
+                                                                         
 
   function alternarTema() {
     const novo = View.getTemaAtual() === 'dark' ? 'light' : 'dark';
@@ -279,8 +279,8 @@
     aoAtribuirTickets: () => Atribuir.abrir(arquivoCarregado),
   });
 
-  // O botão de atribuir só aparece se o servidor local estiver no ar
-  // (ou se a URL trouxer ?atribuir=1 — ver atribuir.js).
+                                                                     
+                                                         
   Atribuir.deveMostrar().then(disponivel => { if (disponivel) View.mostrarBotaoAtribuir(); });
 
   View.aplicarTema(Store.getTema());

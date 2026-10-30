@@ -1,4 +1,3 @@
-<!-- Gerado por npm run build:standalone. Edite index.html e assets/. -->
 <!DOCTYPE html>
 <html lang="pt-BR" data-layout="novo" data-theme="light">
 <head>
@@ -879,12 +878,12 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
 </div>
 
 <script data-source="assets/js/storage.js">
-/**
- * Store \u2014 \u00fanico ponto de contato com o localStorage.
- *
- * Nenhum outro m\u00f3dulo conhece nomes de chave nem chama localStorage direto.
- * Quem precisa de um dado persistido pede aqui; quem precisa gravar, avisa aqui.
- */
+   
+                                                     
+  
+                                                                            
+                                                                                 
+   
 window.App = window.App || {};
 window.App.Store = (function () {
   'use strict';
@@ -905,7 +904,7 @@ window.App.Store = (function () {
     try { return localStorage.getItem(chave); } catch (e) { return null; }
   }
   function gravarTexto(chave, valor) {
-    try { localStorage.setItem(chave, valor); } catch (e) { /* storage cheio ou bloqueado */ }
+    try { localStorage.setItem(chave, valor); } catch (e) {                                  }
   }
   function lerObjeto(chave) {
     try {
@@ -917,8 +916,8 @@ window.App.Store = (function () {
     gravarTexto(chave, JSON.stringify(valor));
   }
 
-  // Espelhos em mem\u00f3ria: s\u00e3o a fonte de leitura durante a sess\u00e3o e o storage
-  // \u00e9 atualizado a cada escrita. Evita reparsear JSON a cada card renderizado.
+                                                                             
+                                                                               
   const lideres    = lerObjeto(CHAVES.lideres);
   const presencial = lerObjeto(CHAVES.presencial);
   const concluido  = lerObjeto(CHAVES.concluido);
@@ -929,17 +928,17 @@ window.App.Store = (function () {
   }
 
   return {
-    // \u2500\u2500 Tema \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
     getTema()      { return lerTexto(CHAVES.tema) || 'light'; },
     setTema(tema)  { gravarTexto(CHAVES.tema, tema); },
     getLayout() { return lerTexto(CHAVES.layout) === 'original' ? 'original' : 'novo'; },
     setLayout(layout) { gravarTexto(CHAVES.layout, layout === 'original' ? 'original' : 'novo'); },
 
-    // \u2500\u2500 Atendente logado \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
     getAtendente()      { return lerTexto(CHAVES.atendente) || ''; },
     setAtendente(nome)  { gravarTexto(CHAVES.atendente, nome); },
 
-    // \u2500\u2500 Prefer\u00eancias de conte\u00fado das mensagens \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
     getPrefs() {
       const p = lerObjeto(CHAVES.prefs);
       return { produto: !!p.produto, valor: !!p.valor, telEntregador: !!p.telEntregador };
@@ -952,11 +951,11 @@ window.App.Store = (function () {
       });
     },
 
-    // \u2500\u2500 L\u00edder por base \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
     getLider(base)        { return lideres[base] || ''; },
     setLider(base, nome)  { lideres[base] = nome; gravarObjeto(CHAVES.lideres, lideres); },
 
-    // \u2500\u2500 Marca\u00e7\u00e3o "atendimento presencial" por remessa \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
     isPresencial(remessa)          { return !!presencial[remessa]; },
     setPresencial(remessa, valor)  { presencial[remessa] = valor; gravarObjeto(CHAVES.presencial, presencial); },
     limparPresencial() {
@@ -964,7 +963,7 @@ window.App.Store = (function () {
       gravarObjeto(CHAVES.presencial, presencial);
     },
 
-    // \u2500\u2500 Marca\u00e7\u00e3o "conclu\u00edda" por remessa \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
     isConcluido(remessa) { return !!concluido[remessa]; },
     alternarConcluido(remessa) {
       concluido[remessa] = !concluido[remessa];
@@ -972,55 +971,55 @@ window.App.Store = (function () {
       return concluido[remessa];
     },
 
-    // \u2500\u2500 Observa\u00e7\u00e3o por remessa (s\u00f3 aparece no template Feishu) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
     getObs(remessa) { return obs[remessa] || ''; },
     temObs(remessa) { return !!obs[remessa]; },
-    /** Texto em branco remove a observa\u00e7\u00e3o em vez de guardar string vazia. */
+                                                                              
     setObs(remessa, valor) {
       if (valor && valor.trim()) obs[remessa] = valor;
       else delete obs[remessa];
       gravarObjeto(CHAVES.obs, obs);
     },
 
-    // \u2500\u2500 Mapeamento de colunas, indexado pela assinatura da planilha \u2500\u2500\u2500
+                                                                         
     getMapeamento(assinatura) {
       try {
         let bruto = lerTexto(chaveMapa(assinatura));
-        // Reaproveita mapeamentos da vers\u00e3o anterior quando dispon\u00edveis.
+                                                                         
         if (!bruto) {
-          try { bruto = lerTexto(PREFIXO_MAPA + btoa(assinatura).slice(0, 40)); } catch (e) { /* Unicode sem chave antiga */ }
+          try { bruto = lerTexto(PREFIXO_MAPA + btoa(assinatura).slice(0, 40)); } catch (e) {                                }
         }
         return bruto ? JSON.parse(bruto) : null;
       } catch (e) { return null; }
     },
     setMapeamento(assinatura, mapa) {
-      try { gravarTexto(chaveMapa(assinatura), JSON.stringify(mapa)); } catch (e) { /* assinatura fora do Latin-1 */ }
+      try { gravarTexto(chaveMapa(assinatura), JSON.stringify(mapa)); } catch (e) {                                  }
     },
     limparMapeamentos() {
       try {
         Object.keys(localStorage)
           .filter(k => k.startsWith(PREFIXO_MAPA))
           .forEach(k => localStorage.removeItem(k));
-      } catch (e) { /* storage bloqueado */ }
+      } catch (e) {                         }
     },
   };
 })();
 
 </script>
 <script data-source="assets/js/dominio.js">
-/**
- * Dominio \u2014 regras de neg\u00f3cio das acarea\u00e7\u00f5es.
- *
- * S\u00f3 fun\u00e7\u00f5es puras: recebe dados, devolve dados. N\u00e3o toca no DOM, no
- * localStorage nem no XLSX. Onde precisa saber se uma remessa est\u00e1 conclu\u00edda
- * ou \u00e9 presencial, recebe o predicado por par\u00e2metro em vez de consultar o
- * estado global.
- */
+   
+                                              
+  
+                                                                     
+                                                                             
+                                                                          
+                 
+   
 window.App = window.App || {};
 window.App.Dominio = (function () {
   'use strict';
 
-  // \u2500\u2500\u2500 Vocabul\u00e1rio do BI \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   const MAPA_PROBLEMAS = [
     { chaves: ['[latam] delivered but not received', 'delivered but not received'], saida: 'Assinado n\u00e3o recebido' },
@@ -1038,12 +1037,12 @@ window.App.Dominio = (function () {
     temu: 'Temu', wepink: 'WePink', jequiti: 'Jequiti', tiktok: 'TikTok',
   };
 
-  /**
-   * Campos que o painel consome, com os nomes de coluna que j\u00e1 apareceram no BI.
-   * A ordem importa: a detec\u00e7\u00e3o autom\u00e1tica reserva a coluna para o primeiro
-   * campo que a reivindicar (por isso `assistenteResp` vem antes de `tel`, e
-   * `dataBaixa` lista "data da entrega" primeiro).
-   */
+     
+                                                                                 
+                                                                            
+                                                                             
+                                                   
+     
   const CAMPOS = [
     { id: 'remessa',       label: 'Remessa / N\u00ba do pedido',        obrigatorio: true,  candidatos: ['remessa', 'numero da remessa', 'numero do pedido', 'numero pedido', 'pedido', 'waybill', 'tracking', 'cod remessa', 'codigo remessa'] },
     { id: 'problema',      label: 'Tipo de problema (n\u00edvel 2)',     obrigatorio: true,  candidatos: ['tipo de item problematico nivel 2', 'tipo de item problematico nivel2', 'tipo de item problematico', 'problema nivel 2', 'problema nivel2', 'nivel 2', 'nivel2', 'tipo do problema', 'tipo problema', 'problema'] },
@@ -1058,19 +1057,19 @@ window.App.Dominio = (function () {
     { id: 'valor',         label: 'Valor do produto',               obrigatorio: false, candidatos: ['valor', 'preco', 'price', 'valor declarado', 'valor do produto', 'valor do pedido', 'valor mercadoria', 'valor nota fiscal', 'valor nf'] },
     { id: 'item',          label: 'Item / Descri\u00e7\u00e3o do produto',    obrigatorio: false, candidatos: ['conteudo do pacote', 'conteudo', 'produto', 'descricao', 'description', 'descricao do produto', 'descricao do item', 'nome do produto', 'nome do item', 'descricao produto', 'descricao item', 'item'] },
     { id: 'embarcador',    label: 'Embarcador / Origem do pedido',  obrigatorio: false, candidatos: ['embarcador', 'loja', 'origem', 'origem do pedido', 'nome do embarcador', 'lojista', 'shipper', 'seller'] },
-    // 'nome destainario' cobre o typo que aparece em algumas exporta\u00e7\u00f5es
+                                                                         
     { id: 'destinatario',  label: 'Nome do destinat\u00e1rio',           obrigatorio: false, candidatos: ['destinatario', 'destinat\u00e1rio', 'cliente', 'nome destainario', 'nome do destinatario', 'nome do destinat\u00e1rio', 'nome destinatario', 'nome destinat\u00e1rio', 'nome do cliente', 'recipient'] },
     { id: 'rne',           label: 'RNE / Focal',                    obrigatorio: false, candidatos: ['rne', 'focal', 'numero rne', 'cod rne'] },
   ];
 
-  // \u2500\u2500\u2500 Normaliza\u00e7\u00e3o \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
-  /** Min\u00fasculas, sem espa\u00e7os nas pontas e sem acentos \u2014 base de toda compara\u00e7\u00e3o. */
+                                                                                    
   function strip(s) {
     return String(s || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
 
-  /** Converte o tipo de problema do BI num r\u00f3tulo can\u00f4nico; null se n\u00e3o for acarea\u00e7\u00e3o. */
+                                                                                          
   function normalizarProblema(v) {
     const s = strip(v);
     if (!s) return null;
@@ -1082,7 +1081,7 @@ window.App.Dominio = (function () {
     return null;
   }
 
-  /** Reduz as v\u00e1rias grafias de status do BI a uma chave can\u00f4nica. */
+                                                                      
   function normalizarStatusTicket(v) {
     const s = strip(v);
     if (!s) return 'sem_status';
@@ -1101,9 +1100,9 @@ window.App.Dominio = (function () {
     return s.replace(/\b\w/g, c => c.toUpperCase());
   }
 
-  // \u2500\u2500\u2500 Convers\u00e3o de valores da planilha \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
-  /** C\u00f3digos num\u00e9ricos (remessa) chegam como float do Excel; arredonda sem virar nota\u00e7\u00e3o cient\u00edfica. */
+                                                                                                        
   function tratarNumero(v) {
     if (v === null || v === undefined || String(v).trim() === '') return '';
     const s = String(v).trim();
@@ -1127,7 +1126,7 @@ window.App.Dominio = (function () {
 
   const pad = n => String(n).padStart(2, '0');
 
-  /** Serial do Excel \u2192 Date. O epoch do Excel \u00e9 1899-12-30, da\u00ed o -25569. */
+                                                                             
   function dataDeSerialExcel(serial) {
     return new Date(Math.round((serial - 25569) * 86400 * 1000));
   }
@@ -1151,20 +1150,20 @@ window.App.Dominio = (function () {
     return (h === 0 && mi === 0) ? dataUTC(d) : `${dataUTC(d)} \u00e0s ${pad(h)}h${pad(mi)}`;
   }
 
-  /** Nomes do time de plant\u00e3o \u2014 expediente das 9h \u00e0s 18h. */
+                                                             
   const ATENDENTES_PLANTAO = ['sabrina', 'malu', 'diogo', 'miqueias', 'renan', 'edja', 'wilson', 'lucas', 'ricardo'];
 
-  /** O nome digitado em "Respons\u00e1vel pelos atendimentos" \u00e9 de algu\u00e9m do plant\u00e3o? */
+                                                                                    
   function ehPlantao(nomeAtendente) {
     return ATENDENTES_PLANTAO.includes(strip(nomeAtendente).replace(/\s+/g, ' '));
   }
 
-  /**
-   * O prazo regional vence \u00e0s 17h (plant\u00e3o: 18h). Fora do expediente o BI
-   * grava hor\u00e1rios que n\u00e3o correspondem ao prazo real, ent\u00e3o normalizamos:
-   * depois do fim do expediente vira o fim do expediente no mesmo dia;
-   * antes do in\u00edcio do expediente, o fim do expediente no dia anterior.
-   */
+     
+                                                                          
+                                                                           
+                                                                       
+                                                                        
+     
   function ajustarVencimento(v, plantao) {
     if (ehVazio(v)) return 'N/A';
     if (typeof v !== 'number') {
@@ -1181,7 +1180,7 @@ window.App.Dominio = (function () {
     return `${dataUTC(d)} \u00e0s ${pad(h)}h${pad(d.getUTCMinutes())}`;
   }
 
-  /** Timestamp compar\u00e1vel para ordenar por prazo. Sem prazo vai para o fim. */
+                                                                               
   function prazoTimestamp(v) {
     if (v === null || v === undefined || String(v).trim() === '') return Infinity;
     if (typeof v === 'number') {
@@ -1211,13 +1210,13 @@ window.App.Dominio = (function () {
     return !t || t === '0' || t === '00' || t.length < 8;
   }
 
-  // \u2500\u2500\u2500 Montagem das acarea\u00e7\u00f5es \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
-  /**
-   * Converte as linhas cruas da planilha em acarea\u00e7\u00f5es, usando o mapa
-   * campo \u2192 nome de coluna. Linhas cujo tipo de problema n\u00e3o \u00e9 uma acarea\u00e7\u00e3o
-   * conhecida s\u00e3o descartadas e contadas em `ignorados`.
-   */
+     
+                                                                      
+                                                                             
+                                                         
+     
   function processarDados(raw, mapa, atendente) {
     let ignorados = 0;
     const plantao = ehPlantao(atendente);
@@ -1257,7 +1256,7 @@ window.App.Dominio = (function () {
     return { dados, ignorados };
   }
 
-  // \u2500\u2500\u2500 Consultas sobre a lista carregada \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   const ORDENACOES = {
     'valor-asc':  (a, b) => (a.row.valorNum ?? Infinity) - (b.row.valorNum ?? Infinity),
@@ -1272,13 +1271,13 @@ window.App.Dominio = (function () {
     return (a - b) * ordem;
   }
 
-  /**
-   * Aplica filtros e ordena\u00e7\u00e3o, devolvendo `{ row, idx }` \u2014 `idx` \u00e9 a posi\u00e7\u00e3o
-   * na lista original, que \u00e9 como as a\u00e7\u00f5es identificam a acarea\u00e7\u00e3o.
-   *
-   * @param {object}   criterios      { base, embarcador, problema, status, statusTicket, assistente, busca, ordenacao }
-   * @param {function} estaConcluido  (row) => boolean
-   */
+     
+                                                                              
+                                                                    
+    
+                                                                                                                        
+                                                      
+     
   function filtrarEOrdenar(dados, criterios, estaConcluido) {
     const c = criterios || {};
     const busca = strip(c.busca);
@@ -1302,7 +1301,7 @@ window.App.Dominio = (function () {
     return itens;
   }
 
-  /** Valores distintos para popular os selects de filtro. */
+                                                             
   function opcoesDeFiltro(dados) {
     const distintos = f => [...new Set(dados.map(f).filter(Boolean))].sort();
     return {
@@ -1314,7 +1313,7 @@ window.App.Dominio = (function () {
     };
   }
 
-  /** Contadores do topo do painel \u2014 sempre sobre a lista inteira, n\u00e3o a filtrada. */
+                                                                                     
   function calcularStats(dados, ehPresencial, estaConcluido) {
     const presencial = dados.filter(ehPresencial).length;
     return {
@@ -1348,13 +1347,13 @@ window.App.Dominio = (function () {
 
 </script>
 <script data-source="assets/js/templates.js">
-/**
- * Templates \u2014 gera\u00e7\u00e3o dos textos copiados pelo atendente.
- *
- * Fun\u00e7\u00f5es puras: recebem a acarea\u00e7\u00e3o e as op\u00e7\u00f5es j\u00e1 resolvidas pelo chamador.
- * N\u00e3o leem prefer\u00eancias do storage nem campos do formul\u00e1rio \u2014 quem chama \u00e9 que
- * decide se o produto entra no ativo ou se o valor entra no template Feishu.
- */
+   
+                                                          
+  
+                                                                              
+                                                                               
+                                                                             
+   
 window.App = window.App || {};
 window.App.Templates = (function () {
   'use strict';
@@ -1366,7 +1365,7 @@ window.App.Templates = (function () {
     { marcas: ['tiktok'], artigo: 'no' },
   ];
 
-  /** Preposi\u00e7\u00e3o correta para "parceira de entregas ___ *Embarcador*". */
+                                                                         
   function artigoEmbarcador(nome) {
     const n = String(nome).toLowerCase();
     for (const regra of ARTIGOS) {
@@ -1375,7 +1374,7 @@ window.App.Templates = (function () {
     return nome.match(/[aei]$/i) ? 'da' : 'do';
   }
 
-  // \u2500\u2500\u2500 Variantes da mensagem ativa (WhatsApp) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function ativoMercadoLivre(ctx) {
     return `Ol\u00e1, *${ctx.nome}*!\n\n` +
@@ -1389,7 +1388,7 @@ window.App.Templates = (function () {
       `5 - Recebi um produto diferente do comprado`;
   }
 
-  /** Usada por TikTok e WePink \u2014 mesmo texto, muda s\u00f3 a preposi\u00e7\u00e3o do embarcador. */
+                                                                                     
   function ativoSeteOpcoes(ctx) {
     return `Ol\u00e1, *${ctx.nome}*!\n\n` +
       `Meu nome \u00e9 ${ctx.assistente}, representante da transportadora J&T Express.\n` +
@@ -1417,10 +1416,10 @@ window.App.Templates = (function () {
       `6\ufe0f\u20e3 Recebi o produto danificado`;
   }
 
-  /**
-   * @param {object} row      acarea\u00e7\u00e3o
-   * @param {object} opcoes   { assistente, incluirProduto }
-   */
+     
+                                       
+                                                            
+     
   function gerarMensagemWpp(row, opcoes) {
     const o = opcoes || {};
     const embarcador = row.embarcador || 'N/A';
@@ -1441,12 +1440,12 @@ window.App.Templates = (function () {
     return ativoPadrao(ctx);
   }
 
-  // \u2500\u2500\u2500 Template do Feishu \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
-  /**
-   * @param {object} row      acarea\u00e7\u00e3o
-   * @param {object} opcoes   { assistente, lider, presencial, incluirValor, incluirTelEntregador, obs }
-   */
+     
+                                       
+                                                                                                        
+     
   function gerarTemplateFeishu(row, opcoes) {
     const o = opcoes || {};
     const linhas = [
@@ -1478,24 +1477,24 @@ window.App.Templates = (function () {
 
 </script>
 <script data-source="assets/js/planilha.js">
-/**
- * Planilha \u2014 todo o contato com a biblioteca XLSX fica aqui.
- *
- * Leitura do arquivo do BI, detec\u00e7\u00e3o autom\u00e1tica das colunas e exporta\u00e7\u00e3o da
- * lista filtrada. Nenhum outro m\u00f3dulo referencia `XLSX`.
- */
+   
+                                                             
+  
+                                                                            
+                                                         
+   
 window.App = window.App || {};
 window.App.Planilha = (function () {
   'use strict';
 
   const App = window.App;
 
-  // \u2500\u2500\u2500 Leitura \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
-  /**
-   * Escolhe a aba de dados: prioriza uma chamada "export", sen\u00e3o a primeira
-   * que tenha "base responsavel" no cabe\u00e7alho, sen\u00e3o a \u00faltima do arquivo.
-   */
+     
+                                                                            
+                                                                          
+     
   function encontrarAba(wb) {
     if (!wb.SheetNames.length) throw new Error('o arquivo n\u00e3o cont\u00e9m abas');
     for (const nome of wb.SheetNames) {
@@ -1508,16 +1507,16 @@ window.App.Planilha = (function () {
     return wb.SheetNames[wb.SheetNames.length - 1];
   }
 
-  /** Identidade do layout da planilha \u2014 usada para reaproveitar o mapeamento salvo. */
+                                                                                       
   function assinatura(cols) {
     return cols.slice().sort().join('|');
   }
 
-  /**
-   * Acha a coluna que melhor corresponde a um campo: primeiro por nome exato
-   * (sem acento), depois por conter o candidato. Colunas j\u00e1 reivindicadas por
-   * um campo anterior s\u00e3o puladas.
-   */
+     
+                                                                             
+                                                                              
+                                   
+     
   function detectarColuna(cols, candidatos, usadas) {
     const strip = App.Dominio.strip;
     usadas = usadas || new Set();
@@ -1533,7 +1532,7 @@ window.App.Planilha = (function () {
     return null;
   }
 
-  /** Mapa campo \u2192 coluna para todos os campos, respeitando a ordem de prioridade. */
+                                                                                     
   function detectarMapa(cols, campos) {
     const mapa = {};
     const usadas = new Set();
@@ -1545,14 +1544,14 @@ window.App.Planilha = (function () {
     return mapa;
   }
 
-  /** Formato nativo do WPS: o XLSX n\u00e3o l\u00ea e ainda aceita o arquivo em sil\u00eancio. */
+                                                                                   
   const EXT_NAO_SUPORTADAS = ['et', 'ett'];
 
-  /**
-   * CSV salvo em UTF-8 sem BOM sai com acento quebrado quando lido como bytes.
-   * Devolve o texto decodificado, ou null se n\u00e3o for UTF-8 v\u00e1lido (ANSI/cp1252),
-   * caso em que o XLSX resolve pelo caminho normal.
-   */
+     
+                                                                               
+                                                                                 
+                                                    
+     
   function decodificarUtf8(bytes) {
     try {
       const txt = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
@@ -1562,10 +1561,10 @@ window.App.Planilha = (function () {
     }
   }
 
-  /**
-   * L\u00ea a planilha escolhida (.xlsx, .xls, .csv ou .ods).
-   * @returns {Promise<{abaNome: string, raw: object[], cols: string[]}>}
-   */
+     
+                                                         
+                                                                         
+     
   function ler(file) {
     return new Promise((resolve, reject) => {
       const ext = (file.name.split('.').pop() || '').toLowerCase();
@@ -1596,9 +1595,9 @@ window.App.Planilha = (function () {
     });
   }
 
-  // \u2500\u2500\u2500 Exporta\u00e7\u00e3o \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
-  /** Colunas do arquivo exportado, na ordem \u2014 cabe\u00e7alho \u2192 como extrair da acarea\u00e7\u00e3o. */
+                                                                                        
   const COLUNAS_EXPORT = [
     ['Remessa',                r => r.remessa],
     ['Status do Ticket',       r => r.statusTicketRaw || ''],
@@ -1623,7 +1622,7 @@ window.App.Planilha = (function () {
            `_${pad(agora.getHours())}${pad(agora.getMinutes())}.xlsx`;
   }
 
-  /** Gera e dispara o download do .xlsx com as acarea\u00e7\u00f5es informadas. */
+                                                                         
   function exportarAcareacoes(rows) {
     const linhas = rows.map(row => {
       const linha = {};
@@ -1641,10 +1640,10 @@ window.App.Planilha = (function () {
 
 </script>
 <script data-source="assets/js/ui.js">
-/**
- * UI \u2014 utilidades de interface sem v\u00ednculo com o dom\u00ednio: toast e c\u00f3pia
- * para a \u00e1rea de transfer\u00eancia. Servem a qualquer tela.
- */
+   
+                                                                        
+                                                        
+   
 window.App = window.App || {};
 window.App.UI = (function () {
   'use strict';
@@ -1663,7 +1662,7 @@ window.App.UI = (function () {
     timerToast = setTimeout(() => el.classList.remove('show'), DURACAO_TOAST);
   }
 
-  /** Fallback para navegadores/contextos sem a Clipboard API (inclui file://). */
+                                                                                  
   function copiarViaTextarea(texto) {
     const foco = document.activeElement;
     const ta = document.createElement('textarea');
@@ -1680,7 +1679,7 @@ window.App.UI = (function () {
     }
   }
 
-  /** Marca o bot\u00e3o como "Copiado!" e restaura o r\u00f3tulo original depois. */
+                                                                           
   function piscarBotao(botao) {
     if (!botao) return;
     const anterior = timersBotao.get(botao);
@@ -1696,10 +1695,10 @@ window.App.UI = (function () {
     timersBotao.set(botao, { timer, original });
   }
 
-  /**
-   * @param {string} texto
-   * @param {object} opcoes  { botao?: HTMLElement, mensagem?: string }
-   */
+     
+                          
+                                                                       
+     
   function copiar(texto, opcoes) {
     const o = opcoes || {};
     const confirmar = () => {
@@ -1721,13 +1720,13 @@ window.App.UI = (function () {
 
 </script>
 <script data-source="assets/js/menus.js">
-/**
- * menus \u2014 comportamento de "popover" para os <details class="menu">.
- *
- * Fecha ao clicar fora, ao apertar Esc e depois de acionar um bot\u00e3o de
- * dentro (para o menu n\u00e3o ficar pendurado na tela). Usado nas variantes
- * B e C, onde prefer\u00eancias, filtros e a\u00e7\u00f5es em massa vivem em menus.
- */
+   
+                                                                     
+  
+                                                                       
+                                                                        
+                                                                     
+   
 (function () {
   'use strict';
 
@@ -1742,13 +1741,13 @@ window.App.UI = (function () {
   document.addEventListener('click', e => {
     const menu = e.target.closest('details.menu');
 
-    // clique fora de qualquer menu: fecha tudo
+                                               
     if (!menu) { fecharTodos(null); return; }
 
-    // abrir um menu fecha os outros
+                                    
     if (e.target.closest('summary')) { fecharTodos(menu); return; }
 
-    // acionou um bot\u00e3o de dentro do painel: fecha o menu
+                                                         
     if (e.target.closest('.menu-painel .btn')) menu.open = false;
   });
 
@@ -1759,20 +1758,20 @@ window.App.UI = (function () {
 
 </script>
 <script data-source="assets/js/modal-mapa.js">
-/**
- * ModalMapa \u2014 di\u00e1logo de confirma\u00e7\u00e3o do mapeamento campo \u2192 coluna.
- *
- * Autocontido: monta o HTML, valida os obrigat\u00f3rios e devolve o mapa pronto
- * pelo callback `onConfirmar`. O estado do di\u00e1logo aberto vive no closure,
- * n\u00e3o em vari\u00e1veis globais.
- */
+   
+                                                                   
+  
+                                                                            
+                                                                           
+                            
+   
 window.App = window.App || {};
 window.App.ModalMapa = (function () {
   'use strict';
 
   const App = window.App;
 
-  // Di\u00e1logo atualmente aberto: { cols, campos, onConfirmar, onFechar }
+                                                                       
   let aberto = null;
 
   function container() {
@@ -1785,7 +1784,7 @@ window.App.ModalMapa = (function () {
 
   function escaparHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-  /** Verde = detectado, vermelho = obrigat\u00f3rio sem coluna, neutro = opcional vazio. */
+                                                                                       
   function classeDoSelect(campo, valor) {
     if (valor) return 'auto';
     return campo.obrigatorio ? 'missing' : '';
@@ -1835,7 +1834,7 @@ window.App.ModalMapa = (function () {
     if (aoFechar) aoFechar();
   }
 
-  /** L\u00ea os selects; devolve null (e alerta) se faltar algum obrigat\u00f3rio. */
+                                                                            
   function coletarMapa() {
     const mapa = {};
     const faltando = [];
@@ -1869,9 +1868,9 @@ window.App.ModalMapa = (function () {
 
   const ACOES = { fechar, confirmar, limpar: limparSalvos };
 
-  /**
-   * @param {object} opcoes { cols, mapa, foiSalvo, campos?, onConfirmar, onFechar }
-   */
+     
+                                                                                    
+     
   function abrir(opcoes) {
     const cols = opcoes.cols;
     const campos = opcoes.campos || App.Dominio.CAMPOS;
@@ -1888,16 +1887,16 @@ window.App.ModalMapa = (function () {
     container().querySelector('select').focus();
   }
 
-  // Listeners registrados uma \u00fanica vez, por delega\u00e7\u00e3o: o conte\u00fado do
-  // container \u00e9 recriado a cada abertura, mas o container em si n\u00e3o.
+                                                                      
+                                                                     
   container().addEventListener('click', e => {
     if (!aberto) return;
-    if (e.target.classList.contains('modal-overlay')) { fechar(); return; } // clique fora do di\u00e1logo
+    if (e.target.classList.contains('modal-overlay')) { fechar(); return; }                          
     const botao = e.target.closest('[data-acao]');
     if (botao && ACOES[botao.dataset.acao]) ACOES[botao.dataset.acao]();
   });
 
-  // Recolore o select conforme o usu\u00e1rio troca a coluna escolhida
+                                                                  
   container().addEventListener('change', e => {
     if (!aberto) return;
     const sel = e.target.closest('select[id^="map-"]');
@@ -1921,26 +1920,26 @@ window.App.ModalMapa = (function () {
 
 </script>
 <script data-source="assets/js/atribuir.js">
-/**
- * Atribuir \u2014 ponte com o servidor local que atribui os tickets no JMS.
- *
- * O painel \u00e9 um site est\u00e1tico: n\u00e3o tem como falar com o JMS (o token \u00e9
- * pessoal e a API n\u00e3o aceita chamada de outra origem). Quem faz o trabalho \u00e9
- * o `servidor_atribuir.py`, que roda no PC de quem tem o login CE e escuta em
- * 127.0.0.1:8899. Este m\u00f3dulo s\u00f3 conversa com ele:
- *
- *   /ping      \u2192 decide se o bot\u00e3o aparece (sem servidor, ningu\u00e9m v\u00ea nada)
- *   /plano     \u2192 manda o .xlsx e recebe o dry-run pra conferir
- *   /executar  \u2192 s\u00f3 depois da confirma\u00e7\u00e3o expl\u00edcita
- *   /token     \u2192 guarda o authtoken quando a sess\u00e3o do JMS expira
- *
- * Mandamos o ARQUIVO, n\u00e3o as linhas j\u00e1 processadas do painel: a classifica\u00e7\u00e3o
- * TikTok-plataforma \u00d7 ticket comum depende do texto cru do tipo de problema
- * (prefixos "TT-" / "[LATAM]"), que o Dominio normaliza e descarta.
- *
- * Autocontido, como o ModalMapa: monta o pr\u00f3prio di\u00e1logo e some sem deixar
- * estado global para tr\u00e1s.
- */
+   
+                                                                       
+  
+                                                                       
+                                                                             
+                                                                              
+                                                   
+  
+                                                                           
+                                                               
+                                                    
+                                                                  
+  
+                                                                              
+                                                                            
+                                                                    
+  
+                                                                           
+                           
+   
 window.App = window.App || {};
 window.App.Atribuir = (function () {
   'use strict';
@@ -1948,11 +1947,11 @@ window.App.Atribuir = (function () {
   const SERVIDOR = 'http://127.0.0.1:8899';
   const TIMEOUT_PING = 1500;
 
-  /** O .xlsx que o painel carregou \u2014 o mesmo arquivo \u00e9 reenviado ao servidor. */
+                                                                                 
   let arquivo = null;
-  /** Plano montado no servidor, aguardando confirma\u00e7\u00e3o. De uso \u00fanico. */
+                                                                         
   let planoId = null;
-  /** A\u00e7\u00e3o a repetir depois de o usu\u00e1rio colar um token novo. */
+                                                                
   let aoDestravar = null;
 
   function Falha(tipo, mensagem) {
@@ -1965,7 +1964,7 @@ window.App.Atribuir = (function () {
     planoId = null;
   }
 
-  // \u2500\u2500\u2500 Conversa com o servidor local \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function post(rota, corpo) {
     return fetch(SERVIDOR + rota, {
@@ -1985,21 +1984,21 @@ window.App.Atribuir = (function () {
     );
   }
 
-  /**
-   * Decide se o bot\u00e3o aparece. O ping resolve o caso normal; a querystring
-   * ?atribuir=1 \u00e9 a sa\u00edda pro Chrome 138+, que trata "p\u00e1gina p\u00fablica falando
-   * com 127.0.0.1" como acesso \u00e0 rede local e s\u00f3 libera com permiss\u00e3o do
-   * usu\u00e1rio \u2014 permiss\u00e3o que ele costuma s\u00f3 perguntar quando a chamada nasce
-   * de um clique, e n\u00e3o de um ping autom\u00e1tico no carregamento. Com o
-   * ?atribuir=1 (guarde como favorito) o bot\u00e3o aparece mesmo sem o ping, e o
-   * clique \u00e9 que dispara a pergunta do navegador.
-   */
+     
+                                                                           
+                                                                             
+                                                                         
+                                                                            
+                                                                     
+                                                                             
+                                                  
+     
   function deveMostrar() {
     if (/[?&]atribuir=1/.test(window.location.search)) return Promise.resolve(true);
     return detectar();
   }
 
-  /** true se o servidor local est\u00e1 no ar. Erro de rede aqui \u00e9 normal (\u00e9 o time). */
+                                                                                    
   function detectar() {
     if (!window.AbortController) return Promise.resolve(false);
     const parar = new AbortController();
@@ -2019,7 +2018,7 @@ window.App.Atribuir = (function () {
     });
   }
 
-  // \u2500\u2500\u2500 Di\u00e1logo \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function escapar(s) {
     return String(s == null ? '' : s)
@@ -2134,7 +2133,7 @@ window.App.Atribuir = (function () {
     aoClicar('atr-ok', fechar);
   }
 
-  /** Sess\u00e3o do JMS expirou: pede o authtoken novo e repete a a\u00e7\u00e3o interrompida. */
+                                                                                   
   function telaToken(falha) {
     desenhar(cabecalho('Cole o token do JMS') +
       '<p class="modal-sub">' + escapar(falha.mensagem) + '</p>' +
@@ -2175,7 +2174,7 @@ window.App.Atribuir = (function () {
     telaErro(falha);
   }
 
-  // \u2500\u2500\u2500 A\u00e7\u00f5es \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function montarPlano() {
     aoDestravar = montarPlano;
@@ -2189,15 +2188,15 @@ window.App.Atribuir = (function () {
   function executar() {
     if (!planoId) { telaErro(new Falha('erro', 'Gere a lista de novo antes de atribuir.')); return; }
     const id = planoId;
-    planoId = null;                       // plano \u00e9 de uso \u00fanico, dos dois lados
-    aoDestravar = null;                   // token novo no meio da execu\u00e7\u00e3o exige refazer o plano
+    planoId = null;                                                              
+    aoDestravar = null;                                                                          
     telaEspera('Atribuindo no JMS\u2026');
     post('/executar', { plano_id: id })
       .then(telaResultado)
       .catch(tratarFalha);
   }
 
-  /** Chamado pelo bot\u00e3o do painel. */
+                                      
   function abrir(file) {
     if (file) guardarArquivo(file);
     if (!arquivo) {
@@ -2217,20 +2216,20 @@ window.App.Atribuir = (function () {
 
 </script>
 <script data-source="assets/js/view.js">
-/**
- * View \u2014 dono exclusivo do DOM do painel.
- *
- * S\u00f3 este m\u00f3dulo chama getElementById / innerHTML. Ele n\u00e3o conhece o
- * localStorage nem as regras de neg\u00f3cio: recebe dados prontos para exibir e
- * avisa o controlador por callbacks (registrados de uma vez em `ligar`).
- */
+   
+                                          
+  
+                                                                     
+                                                                            
+                                                                         
+   
 window.App = window.App || {};
 window.App.View = (function () {
   'use strict';
 
   const $ = id => document.getElementById(id);
 
-  /** R\u00f3tulo e cor de cada status can\u00f4nico do ticket \u2014 decis\u00e3o de apresenta\u00e7\u00e3o. */
+                                                                                  
   const STATUS_TICKET_META = {
     para_atribuir: { label: 'Para atribuir',          cls: 'badge-atribuido'    },
     processando:   { label: 'Processando',            cls: 'badge-processando'  },
@@ -2246,7 +2245,7 @@ window.App.View = (function () {
     'filter-assistente': 'Todos os assistentes',
   };
 
-  // Callbacks fornecidos pelo controlador em `ligar`.
+                                                      
   const on = {};
 
   function escaparAtributo(s) {
@@ -2257,7 +2256,7 @@ window.App.View = (function () {
     return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  // \u2500\u2500\u2500 Tema \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function aplicarTema(tema) {
     const escuro = tema === 'dark';
@@ -2290,11 +2289,11 @@ window.App.View = (function () {
     }).join('');
   }
 
-  // \u2500\u2500\u2500 Barra do atendente e prefer\u00eancias \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function setAtendente(nome) { $('assistente-input').value = nome; }
 
-  /** Nome digitado, ou 'Atendente' quando em branco. */
+                                                        
   function getAtendente() { return $('assistente-input').value.trim() || 'Atendente'; }
 
   const IDS_PREF = { produto: 'pref-produto', valor: 'pref-valor', telEntregador: 'pref-tel-entregador' };
@@ -2309,14 +2308,14 @@ window.App.View = (function () {
     return prefs;
   }
 
-  // \u2500\u2500\u2500 Filtros \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   const IDS_FILTRO = [
     'filter-base', 'filter-embarcador', 'filter-problema', 'filter-status', 'filter-ticket-status',
     'filter-assistente', 'filter-search', 'sort-order',
   ];
 
-  /** Estado atual dos filtros, no formato que `Dominio.filtrarEOrdenar` espera. */
+                                                                                   
   function lerFiltros() {
     return {
       base:         $('filter-base').value,
@@ -2360,7 +2359,7 @@ window.App.View = (function () {
     $('filter-assistente').value = '';
   }
 
-  // \u2500\u2500\u2500 Visibilidade das se\u00e7\u00f5es \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function mostrarPainel() {
     $('toolbar').style.display = 'block';
@@ -2380,7 +2379,7 @@ window.App.View = (function () {
     $('cards-container').innerHTML = '';
   }
 
-  // \u2500\u2500\u2500 Barras informativas \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function renderInfoBar(info) {
     const barra = $('info-bar');
@@ -2403,13 +2402,13 @@ window.App.View = (function () {
       `${qtd} ticket${qtd === 1 ? '' : 's'} ${qtd === 1 ? 'vis\u00edvel' : 'vis\u00edveis'}`;
   }
 
-  // \u2500\u2500\u2500 Sele\u00e7\u00e3o e observa\u00e7\u00e3o em massa \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function renderContadorSelecionados(qtd) {
     $('bulk-selected-count').textContent = `${qtd} selecionado${qtd === 1 ? '' : 's'}`;
   }
 
-  /** Mostra/esconde o campo de observa\u00e7\u00e3o em massa e os controles de sele\u00e7\u00e3o. */
+                                                                                 
   function mostrarModoSelecao(ativo) {
     $('bulk-obs-wrap').style.display = ativo ? 'block' : 'none';
     $('bulk-selecao-controles').style.display = ativo ? 'flex' : 'none';
@@ -2419,7 +2418,7 @@ window.App.View = (function () {
   function getTextoObsEmMassa()   { return $('bulk-obs-input').value.trim(); }
   function limparTextoObsEmMassa() { $('bulk-obs-input').value = ''; }
 
-  // \u2500\u2500\u2500 Cards \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function badgeStatusTicket(row) {
     if (!row.statusTicketRaw) return '';
@@ -2427,10 +2426,10 @@ window.App.View = (function () {
     return `<span class="badge ${meta.cls}" title="Status no BI: ${escaparAtributo(row.statusTicketRaw)}">${meta.label}</span>`;
   }
 
-  /**
-   * @param {object} item     { idx, row, presencial, telInvalido, concluido, lider, obs, temObs, selecionado }
-   * @param {object} opcoes   { modoSelecao }
-   */
+     
+                                                                                                               
+                                             
+     
   function montarCard(item, opcoes) {
     const { idx, row, presencial, telInvalido, concluido, lider } = item;
     const modoSelecao = opcoes && opcoes.modoSelecao;
@@ -2492,7 +2491,7 @@ window.App.View = (function () {
     container.innerHTML = itens.map(item => montarCard(item, opcoes)).join('');
   }
 
-  /** Atualiza s\u00f3 o card afetado, sem re-renderizar a lista inteira. */
+                                                                       
   function marcarPresencial(idx, presencial) {
     const card = $('card-' + idx);
     if (card) card.classList.toggle('presencial', presencial);
@@ -2522,7 +2521,7 @@ window.App.View = (function () {
     if (botao) botao.classList.toggle('ativo', temObs);
   }
 
-  /** Abre/fecha o textarea de observa\u00e7\u00e3o de um card; ao abrir, foca nele. */
+                                                                             
   function alternarPainelObs(idx) {
     const wrap = $('obs-wrap-' + idx);
     if (!wrap) return;
@@ -2544,23 +2543,23 @@ window.App.View = (function () {
     return campo ? campo.value.trim() : null;
   }
 
-  /** Replica o l\u00edder digitado nos demais cards da mesma base. */
+                                                                 
   function espelharLider(base, nome, origem) {
     document.querySelectorAll('.lider-input[data-base]').forEach(el => {
       if (el.dataset.base === base && el !== origem) el.value = nome;
     });
   }
 
-  // \u2500\u2500\u2500 Input de arquivo \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function tratarSelecaoArquivo(e) {
     const file = e.target.files[0];
     if (!file) return;
-    e.target.value = ''; // permite reescolher o mesmo arquivo depois
+    e.target.value = '';                                             
     if (on.aoSelecionarArquivo) on.aoSelecionarArquivo(file);
   }
 
-  /** Recria o <input type=file> zerado e devolve o novo elemento. */
+                                                                     
   function resetarInputArquivo() {
     const antigo = $('file-input');
     const novo = document.createElement('input');
@@ -2575,11 +2574,11 @@ window.App.View = (function () {
 
   function abrirSeletorArquivo() { $('file-input').click(); }
 
-  /**
-   * Revela a atribui\u00e7\u00e3o no JMS. Fica escondida por padr\u00e3o: s\u00f3 existe pra quem
-   * est\u00e1 com o servidor local (servidor_atribuir.py) ligado \u2014 o resto do time
-   * n\u00e3o tem o login CE nem o servidor, ent\u00e3o o bot\u00e3o s\u00f3 confundiria.
-   */
+     
+                                                                              
+                                                                              
+                                                                     
+     
   function mostrarBotaoAtribuir() {
     ['btn-atribuir', 'atribuir-titulo', 'atribuir-separador'].forEach(id => {
       const el = $(id);
@@ -2587,9 +2586,9 @@ window.App.View = (function () {
     });
   }
 
-  // \u2500\u2500\u2500 Liga\u00e7\u00e3o com o controlador \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
-  /** Extrai { acao, idx, elemento } de um alvo de evento dentro dos cards. */
+                                                                              
   function acaoDe(alvo, seletor) {
     const el = alvo.closest(seletor);
     if (!el) return null;
@@ -2613,7 +2612,7 @@ window.App.View = (function () {
     });
 
     $('upload-area').addEventListener('click', e => {
-      if (e.target.id === 'file-input') return; // evita reentrar pelo clique program\u00e1tico
+      if (e.target.id === 'file-input') return;                                           
       abrirSeletorArquivo();
     });
     $('file-input').addEventListener('change', tratarSelecaoArquivo);
@@ -2650,7 +2649,7 @@ window.App.View = (function () {
     $('btn-aplicar-obs').addEventListener('click', () => on.aoAplicarObsEmMassa && on.aoAplicarObsEmMassa());
     $('btn-atribuir').addEventListener('click', () => on.aoAtribuirTickets && on.aoAtribuirTickets());
 
-    // Delega\u00e7\u00e3o nos cards: o container sobrevive aos re-renders, os cards n\u00e3o.
+                                                                               
     const cards = $('cards-container');
     cards.addEventListener('click', e => despachar(acaoDe(e.target, 'button[data-acao]')));
 
@@ -2665,7 +2664,7 @@ window.App.View = (function () {
     });
   }
 
-  /** Registra os callbacks do controlador e liga todos os listeners. */
+                                                                        
   function ligar(handlers) {
     Object.assign(on, handlers);
     ligarEventos();
@@ -2689,8 +2688,8 @@ window.App.View = (function () {
 
 </script>
 <script data-source="assets/js/background.js">
-/* Fundo do Claude Design. A anima\u00e7\u00e3o para em abas ocultas, no layout original
-   e quando o usu\u00e1rio prefere menos movimento. N\u00e3o altera dados do painel. */
+                                                                              
+                                                                             
 (function () {
   'use strict';
   const canvas = document.getElementById('bg-flow');
@@ -2742,36 +2741,36 @@ window.App.View = (function () {
 
 </script>
 <script data-source="assets/js/app.js">
-/**
- * app \u2014 controlador do painel.
- *
- * Guarda a lista carregada e faz a ponte entre os m\u00f3dulos: l\u00ea o estado no
- * Store, pede as regras ao Dominio, manda a View desenhar. \u00c9 o \u00fanico lugar
- * onde as camadas se encontram; nenhuma delas chama a outra pelas costas.
- */
+   
+                               
+  
+                                                                          
+                                                                           
+                                                                          
+   
 (function () {
   'use strict';
 
   const { Store, Dominio, Templates, Planilha, UI, ModalMapa, View, Atribuir } = window.App;
 
-  /** Acarea\u00e7\u00f5es da planilha carregada. O \u00edndice na lista \u00e9 o id usado pelos cards. */
+                                                                                      
   let acareacoes = [];
 
-  /** O .xlsx original \u2014 a atribui\u00e7\u00e3o no JMS precisa do arquivo, n\u00e3o das linhas
-   *  j\u00e1 processadas (ver o cabe\u00e7alho de atribuir.js). */
+                                                                               
+                                                         
   let arquivoCarregado = null;
 
-  /** \u00cdndices marcados para as a\u00e7\u00f5es em massa, e se o modo de sele\u00e7\u00e3o est\u00e1 ligado. */
+                                                                                     
   const selecionados = new Set();
   let modoSelecaoObs = false;
 
-  // \u2500\u2500\u2500 Predicados de estado (Store + regras) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   const semTelefone   = row => Dominio.isNumeroInvalido(row.tel);
   const ehPresencial  = row => semTelefone(row) || Store.isPresencial(row.remessa);
   const estaConcluido = row => Store.isConcluido(row.remessa);
 
-  // \u2500\u2500\u2500 Renderiza\u00e7\u00e3o \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function paraItemDeCard({ row, idx }) {
     return {
@@ -2805,7 +2804,7 @@ window.App.View = (function () {
     View.renderCards(itens.map(paraItemDeCard), { modoSelecao: modoSelecaoObs });
   }
 
-  // \u2500\u2500\u2500 A\u00e7\u00f5es de um card \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function copiarAtivo(row, botao) {
     UI.copiar(
@@ -2877,7 +2876,7 @@ window.App.View = (function () {
     if (row && acao) acao(row, evento);
   }
 
-  // \u2500\u2500\u2500 A\u00e7\u00f5es em massa \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function copiarRemessasFiltradas(botao) {
     const itens = visiveis();
@@ -2938,7 +2937,7 @@ window.App.View = (function () {
     fecharObsEmMassa();
   }
 
-  // \u2500\u2500\u2500 Carregamento da planilha \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function finalizarCarregamento(abaNome, totalLinhas, ignorados) {
     View.renderInfoBar({
@@ -2997,7 +2996,7 @@ window.App.View = (function () {
     View.resetarInputArquivo().click();
   }
 
-  // \u2500\u2500\u2500 Inicializa\u00e7\u00e3o \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+                                                                         
 
   function alternarTema() {
     const novo = View.getTemaAtual() === 'dark' ? 'light' : 'dark';
@@ -3023,8 +3022,8 @@ window.App.View = (function () {
     aoAtribuirTickets: () => Atribuir.abrir(arquivoCarregado),
   });
 
-  // O bot\u00e3o de atribuir s\u00f3 aparece se o servidor local estiver no ar
-  // (ou se a URL trouxer ?atribuir=1 \u2014 ver atribuir.js).
+                                                                     
+                                                         
   Atribuir.deveMostrar().then(disponivel => { if (disponivel) View.mostrarBotaoAtribuir(); });
 
   View.aplicarTema(Store.getTema());

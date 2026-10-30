@@ -8,7 +8,7 @@ html = html.replace(/<link rel="stylesheet" href="(assets\/[^"]+)"\s*>/g, (_, as
   `<style data-source="${asset}">\n${fs.readFileSync(path.join(root, asset), 'utf8').replace(/speak:none;?/g, '')}\n</style>`);
 html = html.replace(/<script src="(assets\/[^"]+)"\s*><\/script>/g, (_, asset) =>
   `<script data-source="${asset}">\n${ascii(fs.readFileSync(path.join(root, asset), 'utf8').replace(/<\/script/gi, '<\\/script'))}\n</script>`);
-const output = '<!-- Gerado por npm run build:standalone. Edite index.html e assets/. -->\n' + html;
+const output = html;
 fs.writeFileSync(path.join(root, 'standalone.html'), output);
 // Atualiza também a exportação aberta no editor, preservando o arquivo original.
 const original = path.join(root, 'Painel de Acareacoes - Standalone.html');

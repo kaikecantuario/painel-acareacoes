@@ -1,17 +1,17 @@
-/**
- * View — dono exclusivo do DOM do painel.
- *
- * Só este módulo chama getElementById / innerHTML. Ele não conhece o
- * localStorage nem as regras de negócio: recebe dados prontos para exibir e
- * avisa o controlador por callbacks (registrados de uma vez em `ligar`).
- */
+   
+                                          
+  
+                                                                     
+                                                                            
+                                                                         
+   
 window.App = window.App || {};
 window.App.View = (function () {
   'use strict';
 
   const $ = id => document.getElementById(id);
 
-  /** Rótulo e cor de cada status canônico do ticket — decisão de apresentação. */
+                                                                                  
   const STATUS_TICKET_META = {
     para_atribuir: { label: 'Para atribuir',          cls: 'badge-atribuido'    },
     processando:   { label: 'Processando',            cls: 'badge-processando'  },
@@ -27,7 +27,7 @@ window.App.View = (function () {
     'filter-assistente': 'Todos os assistentes',
   };
 
-  // Callbacks fornecidos pelo controlador em `ligar`.
+                                                      
   const on = {};
 
   function escaparAtributo(s) {
@@ -38,7 +38,7 @@ window.App.View = (function () {
     return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  // ─── Tema ───────────────────────────────────────────────────────────
+                                                                         
 
   function aplicarTema(tema) {
     const escuro = tema === 'dark';
@@ -71,11 +71,11 @@ window.App.View = (function () {
     }).join('');
   }
 
-  // ─── Barra do atendente e preferências ──────────────────────────────
+                                                                         
 
   function setAtendente(nome) { $('assistente-input').value = nome; }
 
-  /** Nome digitado, ou 'Atendente' quando em branco. */
+                                                        
   function getAtendente() { return $('assistente-input').value.trim() || 'Atendente'; }
 
   const IDS_PREF = { produto: 'pref-produto', valor: 'pref-valor', telEntregador: 'pref-tel-entregador' };
@@ -90,14 +90,14 @@ window.App.View = (function () {
     return prefs;
   }
 
-  // ─── Filtros ────────────────────────────────────────────────────────
+                                                                         
 
   const IDS_FILTRO = [
     'filter-base', 'filter-embarcador', 'filter-problema', 'filter-status', 'filter-ticket-status',
     'filter-assistente', 'filter-search', 'sort-order',
   ];
 
-  /** Estado atual dos filtros, no formato que `Dominio.filtrarEOrdenar` espera. */
+                                                                                   
   function lerFiltros() {
     return {
       base:         $('filter-base').value,
@@ -141,7 +141,7 @@ window.App.View = (function () {
     $('filter-assistente').value = '';
   }
 
-  // ─── Visibilidade das seções ────────────────────────────────────────
+                                                                         
 
   function mostrarPainel() {
     $('toolbar').style.display = 'block';
@@ -161,7 +161,7 @@ window.App.View = (function () {
     $('cards-container').innerHTML = '';
   }
 
-  // ─── Barras informativas ────────────────────────────────────────────
+                                                                         
 
   function renderInfoBar(info) {
     const barra = $('info-bar');
@@ -184,13 +184,13 @@ window.App.View = (function () {
       `${qtd} ticket${qtd === 1 ? '' : 's'} ${qtd === 1 ? 'visível' : 'visíveis'}`;
   }
 
-  // ─── Seleção e observação em massa ──────────────────────────────────
+                                                                         
 
   function renderContadorSelecionados(qtd) {
     $('bulk-selected-count').textContent = `${qtd} selecionado${qtd === 1 ? '' : 's'}`;
   }
 
-  /** Mostra/esconde o campo de observação em massa e os controles de seleção. */
+                                                                                 
   function mostrarModoSelecao(ativo) {
     $('bulk-obs-wrap').style.display = ativo ? 'block' : 'none';
     $('bulk-selecao-controles').style.display = ativo ? 'flex' : 'none';
@@ -200,7 +200,7 @@ window.App.View = (function () {
   function getTextoObsEmMassa()   { return $('bulk-obs-input').value.trim(); }
   function limparTextoObsEmMassa() { $('bulk-obs-input').value = ''; }
 
-  // ─── Cards ──────────────────────────────────────────────────────────
+                                                                         
 
   function badgeStatusTicket(row) {
     if (!row.statusTicketRaw) return '';
@@ -208,10 +208,10 @@ window.App.View = (function () {
     return `<span class="badge ${meta.cls}" title="Status no BI: ${escaparAtributo(row.statusTicketRaw)}">${meta.label}</span>`;
   }
 
-  /**
-   * @param {object} item     { idx, row, presencial, telInvalido, concluido, lider, obs, temObs, selecionado }
-   * @param {object} opcoes   { modoSelecao }
-   */
+     
+                                                                                                               
+                                             
+     
   function montarCard(item, opcoes) {
     const { idx, row, presencial, telInvalido, concluido, lider } = item;
     const modoSelecao = opcoes && opcoes.modoSelecao;
@@ -273,7 +273,7 @@ window.App.View = (function () {
     container.innerHTML = itens.map(item => montarCard(item, opcoes)).join('');
   }
 
-  /** Atualiza só o card afetado, sem re-renderizar a lista inteira. */
+                                                                       
   function marcarPresencial(idx, presencial) {
     const card = $('card-' + idx);
     if (card) card.classList.toggle('presencial', presencial);
@@ -303,7 +303,7 @@ window.App.View = (function () {
     if (botao) botao.classList.toggle('ativo', temObs);
   }
 
-  /** Abre/fecha o textarea de observação de um card; ao abrir, foca nele. */
+                                                                             
   function alternarPainelObs(idx) {
     const wrap = $('obs-wrap-' + idx);
     if (!wrap) return;
@@ -325,23 +325,23 @@ window.App.View = (function () {
     return campo ? campo.value.trim() : null;
   }
 
-  /** Replica o líder digitado nos demais cards da mesma base. */
+                                                                 
   function espelharLider(base, nome, origem) {
     document.querySelectorAll('.lider-input[data-base]').forEach(el => {
       if (el.dataset.base === base && el !== origem) el.value = nome;
     });
   }
 
-  // ─── Input de arquivo ───────────────────────────────────────────────
+                                                                         
 
   function tratarSelecaoArquivo(e) {
     const file = e.target.files[0];
     if (!file) return;
-    e.target.value = ''; // permite reescolher o mesmo arquivo depois
+    e.target.value = '';                                             
     if (on.aoSelecionarArquivo) on.aoSelecionarArquivo(file);
   }
 
-  /** Recria o <input type=file> zerado e devolve o novo elemento. */
+                                                                     
   function resetarInputArquivo() {
     const antigo = $('file-input');
     const novo = document.createElement('input');
@@ -356,11 +356,11 @@ window.App.View = (function () {
 
   function abrirSeletorArquivo() { $('file-input').click(); }
 
-  /**
-   * Revela a atribuição no JMS. Fica escondida por padrão: só existe pra quem
-   * está com o servidor local (servidor_atribuir.py) ligado — o resto do time
-   * não tem o login CE nem o servidor, então o botão só confundiria.
-   */
+     
+                                                                              
+                                                                              
+                                                                     
+     
   function mostrarBotaoAtribuir() {
     ['btn-atribuir', 'atribuir-titulo', 'atribuir-separador'].forEach(id => {
       const el = $(id);
@@ -368,9 +368,9 @@ window.App.View = (function () {
     });
   }
 
-  // ─── Ligação com o controlador ──────────────────────────────────────
+                                                                         
 
-  /** Extrai { acao, idx, elemento } de um alvo de evento dentro dos cards. */
+                                                                              
   function acaoDe(alvo, seletor) {
     const el = alvo.closest(seletor);
     if (!el) return null;
@@ -394,7 +394,7 @@ window.App.View = (function () {
     });
 
     $('upload-area').addEventListener('click', e => {
-      if (e.target.id === 'file-input') return; // evita reentrar pelo clique programático
+      if (e.target.id === 'file-input') return;                                           
       abrirSeletorArquivo();
     });
     $('file-input').addEventListener('change', tratarSelecaoArquivo);
@@ -431,7 +431,7 @@ window.App.View = (function () {
     $('btn-aplicar-obs').addEventListener('click', () => on.aoAplicarObsEmMassa && on.aoAplicarObsEmMassa());
     $('btn-atribuir').addEventListener('click', () => on.aoAtribuirTickets && on.aoAtribuirTickets());
 
-    // Delegação nos cards: o container sobrevive aos re-renders, os cards não.
+                                                                               
     const cards = $('cards-container');
     cards.addEventListener('click', e => despachar(acaoDe(e.target, 'button[data-acao]')));
 
@@ -446,7 +446,7 @@ window.App.View = (function () {
     });
   }
 
-  /** Registra os callbacks do controlador e liga todos os listeners. */
+                                                                        
   function ligar(handlers) {
     Object.assign(on, handlers);
     ligarEventos();

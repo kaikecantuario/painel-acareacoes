@@ -1,10 +1,10 @@
-/**
- * Templates — geração dos textos copiados pelo atendente.
- *
- * Funções puras: recebem a acareação e as opções já resolvidas pelo chamador.
- * Não leem preferências do storage nem campos do formulário — quem chama é que
- * decide se o produto entra no ativo ou se o valor entra no template Feishu.
- */
+   
+                                                          
+  
+                                                                              
+                                                                               
+                                                                             
+   
 window.App = window.App || {};
 window.App.Templates = (function () {
   'use strict';
@@ -16,7 +16,7 @@ window.App.Templates = (function () {
     { marcas: ['tiktok'], artigo: 'no' },
   ];
 
-  /** Preposição correta para "parceira de entregas ___ *Embarcador*". */
+                                                                         
   function artigoEmbarcador(nome) {
     const n = String(nome).toLowerCase();
     for (const regra of ARTIGOS) {
@@ -25,7 +25,7 @@ window.App.Templates = (function () {
     return nome.match(/[aei]$/i) ? 'da' : 'do';
   }
 
-  // ─── Variantes da mensagem ativa (WhatsApp) ─────────────────────────
+                                                                         
 
   function ativoMercadoLivre(ctx) {
     return `Olá, *${ctx.nome}*!\n\n` +
@@ -39,7 +39,7 @@ window.App.Templates = (function () {
       `5 - Recebi um produto diferente do comprado`;
   }
 
-  /** Usada por TikTok e WePink — mesmo texto, muda só a preposição do embarcador. */
+                                                                                     
   function ativoSeteOpcoes(ctx) {
     return `Olá, *${ctx.nome}*!\n\n` +
       `Meu nome é ${ctx.assistente}, representante da transportadora J&T Express.\n` +
@@ -67,10 +67,10 @@ window.App.Templates = (function () {
       `6️⃣ Recebi o produto danificado`;
   }
 
-  /**
-   * @param {object} row      acareação
-   * @param {object} opcoes   { assistente, incluirProduto }
-   */
+     
+                                       
+                                                            
+     
   function gerarMensagemWpp(row, opcoes) {
     const o = opcoes || {};
     const embarcador = row.embarcador || 'N/A';
@@ -91,12 +91,12 @@ window.App.Templates = (function () {
     return ativoPadrao(ctx);
   }
 
-  // ─── Template do Feishu ─────────────────────────────────────────────
+                                                                         
 
-  /**
-   * @param {object} row      acareação
-   * @param {object} opcoes   { assistente, lider, presencial, incluirValor, incluirTelEntregador, obs }
-   */
+     
+                                       
+                                                                                                        
+     
   function gerarTemplateFeishu(row, opcoes) {
     const o = opcoes || {};
     const linhas = [

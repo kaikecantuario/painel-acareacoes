@@ -1,23 +1,23 @@
-/**
- * Atribuir — ponte com o servidor local que atribui os tickets no JMS.
- *
- * O painel é um site estático: não tem como falar com o JMS (o token é
- * pessoal e a API não aceita chamada de outra origem). Quem faz o trabalho é
- * o `servidor_atribuir.py`, que roda no PC de quem tem o login CE e escuta em
- * 127.0.0.1:8899. Este módulo só conversa com ele:
- *
- *   /ping      → decide se o botão aparece (sem servidor, ninguém vê nada)
- *   /plano     → manda o .xlsx e recebe o dry-run pra conferir
- *   /executar  → só depois da confirmação explícita
- *   /token     → guarda o authtoken quando a sessão do JMS expira
- *
- * Mandamos o ARQUIVO, não as linhas já processadas do painel: a classificação
- * TikTok-plataforma × ticket comum depende do texto cru do tipo de problema
- * (prefixos "TT-" / "[LATAM]"), que o Dominio normaliza e descarta.
- *
- * Autocontido, como o ModalMapa: monta o próprio diálogo e some sem deixar
- * estado global para trás.
- */
+   
+                                                                       
+  
+                                                                       
+                                                                             
+                                                                              
+                                                   
+  
+                                                                           
+                                                               
+                                                    
+                                                                  
+  
+                                                                              
+                                                                            
+                                                                    
+  
+                                                                           
+                           
+   
 window.App = window.App || {};
 window.App.Atribuir = (function () {
   'use strict';
@@ -25,11 +25,11 @@ window.App.Atribuir = (function () {
   const SERVIDOR = 'http://127.0.0.1:8899';
   const TIMEOUT_PING = 1500;
 
-  /** O .xlsx que o painel carregou — o mesmo arquivo é reenviado ao servidor. */
+                                                                                 
   let arquivo = null;
-  /** Plano montado no servidor, aguardando confirmação. De uso único. */
+                                                                         
   let planoId = null;
-  /** Ação a repetir depois de o usuário colar um token novo. */
+                                                                
   let aoDestravar = null;
 
   function Falha(tipo, mensagem) {
@@ -42,7 +42,7 @@ window.App.Atribuir = (function () {
     planoId = null;
   }
 
-  // ─── Conversa com o servidor local ──────────────────────────────────
+                                                                         
 
   function post(rota, corpo) {
     return fetch(SERVIDOR + rota, {
@@ -62,21 +62,21 @@ window.App.Atribuir = (function () {
     );
   }
 
-  /**
-   * Decide se o botão aparece. O ping resolve o caso normal; a querystring
-   * ?atribuir=1 é a saída pro Chrome 138+, que trata "página pública falando
-   * com 127.0.0.1" como acesso à rede local e só libera com permissão do
-   * usuário — permissão que ele costuma só perguntar quando a chamada nasce
-   * de um clique, e não de um ping automático no carregamento. Com o
-   * ?atribuir=1 (guarde como favorito) o botão aparece mesmo sem o ping, e o
-   * clique é que dispara a pergunta do navegador.
-   */
+     
+                                                                           
+                                                                             
+                                                                         
+                                                                            
+                                                                     
+                                                                             
+                                                  
+     
   function deveMostrar() {
     if (/[?&]atribuir=1/.test(window.location.search)) return Promise.resolve(true);
     return detectar();
   }
 
-  /** true se o servidor local está no ar. Erro de rede aqui é normal (é o time). */
+                                                                                    
   function detectar() {
     if (!window.AbortController) return Promise.resolve(false);
     const parar = new AbortController();
@@ -96,7 +96,7 @@ window.App.Atribuir = (function () {
     });
   }
 
-  // ─── Diálogo ────────────────────────────────────────────────────────
+                                                                         
 
   function escapar(s) {
     return String(s == null ? '' : s)
@@ -211,7 +211,7 @@ window.App.Atribuir = (function () {
     aoClicar('atr-ok', fechar);
   }
 
-  /** Sessão do JMS expirou: pede o authtoken novo e repete a ação interrompida. */
+                                                                                   
   function telaToken(falha) {
     desenhar(cabecalho('Cole o token do JMS') +
       '<p class="modal-sub">' + escapar(falha.mensagem) + '</p>' +
@@ -252,7 +252,7 @@ window.App.Atribuir = (function () {
     telaErro(falha);
   }
 
-  // ─── Ações ──────────────────────────────────────────────────────────
+                                                                         
 
   function montarPlano() {
     aoDestravar = montarPlano;
@@ -266,15 +266,15 @@ window.App.Atribuir = (function () {
   function executar() {
     if (!planoId) { telaErro(new Falha('erro', 'Gere a lista de novo antes de atribuir.')); return; }
     const id = planoId;
-    planoId = null;                       // plano é de uso único, dos dois lados
-    aoDestravar = null;                   // token novo no meio da execução exige refazer o plano
+    planoId = null;                                                              
+    aoDestravar = null;                                                                          
     telaEspera('Atribuindo no JMS…');
     post('/executar', { plano_id: id })
       .then(telaResultado)
       .catch(tratarFalha);
   }
 
-  /** Chamado pelo botão do painel. */
+                                      
   function abrir(file) {
     if (file) guardarArquivo(file);
     if (!arquivo) {
